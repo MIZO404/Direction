@@ -155,6 +155,7 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 
 	//output_px[k] = -1;
 	//output_py[k] = -1;
+	//test
 
 	return 0;
 }
