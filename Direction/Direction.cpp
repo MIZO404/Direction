@@ -42,7 +42,7 @@
 //#define deg_to_rad(deg) (((deg)/360)*2*M_PI)
 #define deg_to_rad(deg) deg * M_PI/180
 
-#define p 14 //同時に解析する人数
+#define p 14 //同時に解析する人数(仮)
 
 double room(double width, double height1) {
 	double room = (ROOM_W / ROOM_H) * (WINDOW_H * 0.6);
@@ -84,6 +84,10 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 			point_x1 = (d - b) / (a1 - c1);
 			point_y1 = (a1 * d - b * c1) / (a1 - c1);
 
+			/*対象外条件*/
+			if (0 > point_x1 || point_x1 > ROOM_W)break;
+			if (0 > point_y1 || point_y1 > ROOM_H)break;
+
 			/*点2	leftx_1, rightx_2 の交点*/
 			a2 = tan(deg_to_rad(deg_trans(c_r_1 - ((leftx_1[i] * 360) / 3860)))); //直線の傾き #1
 			c2 = tan(deg_to_rad(deg_trans(c_r_2 - ((rightx_2[j] * 360) / 3860)))); //直線の傾き #2
@@ -93,6 +97,10 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 
 			point_x2 = (d - b) / (a2 - c2);
 			point_y2 = (a2 * d - b * c2) / (a2 - c2);
+
+			/*対象外条件*/
+			if (0 > point_x2 || point_x2 > ROOM_W)break;
+			if (0 > point_y2 || point_y2 > ROOM_H)break;
 			
 			/*点3	rightx_1, rightx_2 の交点*/
 			a3 = tan(deg_to_rad(deg_trans(c_r_1 - ((rightx_1[i] * 360) / 3860)))); //直線の傾き #1
@@ -103,6 +111,10 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 
 			point_x3 = (d - b) / (a3 - c3);
 			point_y3 = (a3 * d - b * c3) / (a3 - c3);
+
+			/*対象外条件*/
+			if (0 > point_x3 || point_x3 > ROOM_W)break;
+			if (0 > point_y3 || point_y3 > ROOM_H)break;
 
 			/*点4	leftx_2, rightx_1 の交点*/
 			a4 = tan(deg_to_rad(deg_trans(c_r_1 - ((rightx_1[i] * 360) / 3860)))); //直線の傾き #1
@@ -115,15 +127,6 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 			point_y4 = (a4 * d - b * c4) / (a4 - c4);
 
 			/*対象外条件*/
-			if (0 > point_x1 || point_x1 > ROOM_W)break;
-			if (0 > point_y1 || point_y1 > ROOM_H)break;
-
-			if (0 > point_x2 || point_x2 > ROOM_W)break;
-			if (0 > point_y2 || point_y2 > ROOM_H)break;
-
-			if (0 > point_x3 || point_x3 > ROOM_W)break;
-			if (0 > point_y3 || point_y3 > ROOM_H)break;
-
 			if (0 > point_x4 || point_x4 > ROOM_W)break;
 			if (0 > point_y4 || point_y4 > ROOM_H)break;
 
