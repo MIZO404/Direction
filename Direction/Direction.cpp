@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <Windows.h>
 
 //部屋の広さ コアルーム 8.34*6.79
 #define ROOM_H 6.79
@@ -159,7 +160,7 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 	return 0;
 }
 
-int main()
+int main(int argc, const char* argv[])
 {
 	FILE *fp1 = NULL; // FILE型構造体 読み込む方 #1
 	FILE *fp2 = NULL; // FILE型構造体 読み込む方 #2
@@ -182,6 +183,11 @@ int main()
 	char *tp1, *tp2;
 	int counter_m = 0;
 	int i, j;
+
+	//ウィンドウサイズは960:540
+	double rec_x1 = 0.0 + 50.0, rec_y1 = 0.0 + 50.0; //部屋の描写
+	double rec_x2 = 960.0 - 50.0, rec_y2 = 540.0 - 50.0;
+
 
 	errno_t error;
 
@@ -300,14 +306,29 @@ int main()
 			counter++;
 		}
 		// フレーム　切り替え
-
 		d_camera(left_x1, left_x2, right_x1, right_x2, output_px, output_py);
+
+		//cv::Mat img(cv::Size(960, 540), CV_8UC3, cv::Scalar(255, 255, 255));
+		//cv::namedWindow("ROOM", cv::WINDOW_AUTOSIZE);
+		//cv::rectangle(img, cv::Point(rec_x1, rec_y1), cv::Point(rec_x2, rec_y2), cv::Scalar(0, 0, 0), 2, 4); //部屋の描写
+		//cv::circle(img, cv::Point( (c_x_1/ ROOM_W )* (rec_x2 - rec_x1) + rec_x1, rec_y2), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ1
+		//cv::putText(img, "camera 1", cv::Point((c_x_1 / ROOM_W)* (rec_x2 - rec_x1) + 30 + rec_x1, rec_y2), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
+
+		//cv::circle(img, cv::Point( (c_x_2 / ROOM_W)* (rec_x2 - rec_x1)+rec_x1, rec_y1), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ2
+		//cv::putText(img, "camera 2", cv::Point((c_x_2 / ROOM_W) * (rec_x2 - rec_x1) + 30 + rec_x1, rec_y1), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
+
+
+		
 
 		for (int i = 0; output_px[i] != '\0' || output_py[i] != '\0'; i++)
 		{
 			//printf(" i = %d  %2.2f,%2.2f\n",i,output_px[i],output_py[i]);
 			fprintf(fp3, "%2.2f ", output_px[i]);
 			fprintf(fp3, "%2.2f\n", output_py[i]);
+
+			//cv::circle(img, cv::Point((output_px[i] / ROOM_W)* (rec_x2 - rec_x1) + rec_x1, ((ROOM_H - output_py[i]) / ROOM_H)* (rec_y2 - rec_y1) + rec_y1), 7, cv::Scalar(0, 0, 0), -1, CV_AA);//人物位置
+			//cv::imshow("ROOM", img);
+			//cv::waitKey(15);
 		}
 
 		fprintf(fp3, "\n");
@@ -317,6 +338,7 @@ int main()
 	fclose(fp2);
 	fclose(fp3);
 	fclose(fp4);
+	cv::destroyAllWindows();
 
 	return 0;
 }
