@@ -313,7 +313,7 @@ int main(int argc, const char* argv[])
 		
 
 		for (int i = 0; output_px[i] != '\0' || output_py[i] != '\0'; i++)
-		{
+		{//test
 			//printf(" i = %d  %2.2f,%2.2f\n",i,output_px[i],output_py[i]);
 			fprintf(fp3, "%2.2f ", output_px[i]);
 			fprintf(fp3, "%2.2f\n", output_py[i]);
