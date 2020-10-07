@@ -181,11 +181,6 @@ int main(int argc, const char* argv[])
 	double rec_x2 = ROOM_W * 100.0 + 50.0, rec_y2 = ROOM_H * 100.0 + 50.0;
 
 
-	//ウィンドウサイズは960:540
-	double rec_x1 = 0.0 + 50.0, rec_y1 = 0.0 + 50.0; //部屋の描写
-	double rec_x2 = 960.0 - 50.0, rec_y2 = 540.0 - 50.0;
-
-
 	errno_t error;
 
 	printf("テキストを2種類読み込みdataフォルダに連番画像を出力します。\n");
@@ -318,7 +313,7 @@ int main(int argc, const char* argv[])
 		
 
 		for (int i = 0; output_px[i] != '\0' || output_py[i] != '\0'; i++)
-		{//test
+		{
 			//printf(" i = %d  %2.2f,%2.2f\n",i,output_px[i],output_py[i]);
 			fprintf(fp3, "%2.2f ", output_px[i]);
 			fprintf(fp3, "%2.2f\n", output_py[i]);
