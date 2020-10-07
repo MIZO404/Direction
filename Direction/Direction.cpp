@@ -323,7 +323,6 @@ int main(int argc, const char* argv[])
 			fprintf(fp3, "%2.2f ", output_px[i]);
 			fprintf(fp3, "%2.2f\n", output_py[i]);
 
-<<<<<<< HEAD
 			//cv::circle(img, cv::Point((output_px[i] / ROOM_W)* (rec_x2 - rec_x1) + rec_x1, 
 			//	((ROOM_H - output_py[i]) / ROOM_H)* (rec_y2 - rec_y1) + rec_y1), 7, cv::Scalar(0, 0, 0), -1, CV_AA);//人物位置
 			cv::circle(img, cv::Point(output_px[i]*100, rec_y2 - output_py[i]*100), 7, cv::Scalar(0, 0, 0), -1, CV_AA);//人物位置
@@ -331,11 +330,6 @@ int main(int argc, const char* argv[])
 			output_counter++;
 			cv::imwrite("data/output_"+ std::to_string(output_counter) +".png",img);
 			cv::waitKey(15);
-=======
-			//cv::circle(img, cv::Point((output_px[i] / ROOM_W)* (rec_x2 - rec_x1) + rec_x1, ((ROOM_H - output_py[i]) / ROOM_H)* (rec_y2 - rec_y1) + rec_y1), 7, cv::Scalar(0, 0, 0), -1, CV_AA);//人物位置
-			//cv::imshow("ROOM", img);
-			//cv::waitKey(15);
->>>>>>> 64592e9fcdaa18563ea492f476e4569b0aae2eab
 		}
 
 		fprintf(fp3, "\n");
