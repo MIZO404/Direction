@@ -77,7 +77,7 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 	{
 
 		for (int j = 0; (leftx_2[j] != NULL); j++)
-		{
+		{//test
 
 			/*点A	leftx_1,leftx_2	の交点	*/
 			a1 = tan(deg_to_rad(deg_trans(c_r_1 - ((leftx_1[i] * 360) / 3860)))); //直線の傾き #1
