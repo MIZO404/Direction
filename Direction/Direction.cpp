@@ -13,7 +13,7 @@
 #include <Windows.h>
 
 //部屋の広さ コアルーム 8.34*6.79
-#define ROOM_H 6.79
+#define ROOM_H 6.0 //変更
 #define ROOM_W 8.34
 #define ROOM_CX 16.68
 #define ROOM_CY 13.58
@@ -54,10 +54,7 @@ double room(double width, double height1)
 
 double deg_trans(double rad)
 {
-	if (-180 <= rad && rad < 0)
-		rad = 360 + rad;
-	if (-360 <= rad && rad < -180)
-		rad = -rad;
+	if (rad < 0)rad = ( (int)rad % 360) + 360.0;
 	return rad;
 }
 
@@ -93,10 +90,8 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 			point_y1 = (a1 * d - b * c1) / (a1 - c1);
 
 			/*対象外条件*/
-			if (0 > point_x1 || point_x1 > ROOM_W)
-				break;
-			if (0 > point_y1 || point_y1 > ROOM_H)
-				break;
+			if (0 > point_x1 || point_x1 > ROOM_W)break;
+			if (0 > point_y1 || point_y1 > ROOM_H)break;
 
 			/*点2	leftx_1, rightx_2 の交点*/
 			a2 = tan(deg_to_rad(deg_trans(c_r_1 - ((leftx_1[i] * 360) / 3860))));  //直線の傾き #1
@@ -109,10 +104,8 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 			point_y2 = (a2 * d - b * c2) / (a2 - c2);
 
 			/*対象外条件*/
-			if (0 > point_x2 || point_x2 > ROOM_W)
-				break;
-			if (0 > point_y2 || point_y2 > ROOM_H)
-				break;
+			if (0 > point_x2 || point_x2 > ROOM_W)break;
+			if (0 > point_y2 || point_y2 > ROOM_H)break;
 
 			/*点3	rightx_1, rightx_2 の交点*/
 			a3 = tan(deg_to_rad(deg_trans(c_r_1 - ((rightx_1[i] * 360) / 3860)))); //直線の傾き #1
@@ -125,10 +118,8 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 			point_y3 = (a3 * d - b * c3) / (a3 - c3);
 
 			/*対象外条件*/
-			if (0 > point_x3 || point_x3 > ROOM_W)
-				break;
-			if (0 > point_y3 || point_y3 > ROOM_H)
-				break;
+			if (0 > point_x3 || point_x3 > ROOM_W)break;
+			if (0 > point_y3 || point_y3 > ROOM_H)break;
 
 			/*点4	leftx_2, rightx_1 の交点*/
 			a4 = tan(deg_to_rad(deg_trans(c_r_1 - ((rightx_1[i] * 360) / 3860)))); //直線の傾き #1
@@ -141,15 +132,15 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 			point_y4 = (a4 * d - b * c4) / (a4 - c4);
 
 			/*対象外条件*/
-			if (0 > point_x4 || point_x4 > ROOM_W)
-				break;
-			if (0 > point_y4 || point_y4 > ROOM_H)
-				break;
+			if (0 > point_x4 || point_x4 > ROOM_W)break;
+			if (0 > point_y4 || point_y4 > ROOM_H)break;
 
 			men = (point_x4 - point_x2) * (point_y4 - point_y3) - 1 / 2 * ((point_x1 - point_x2) * (point_y4 - point_y2) + (point_x3 - point_x1) * (point_y2 - point_y3) + (point_x4 - point_x2) * (point_y4 - point_y1));
+			if (men > 0.25)break;
 
-			if (men > 0.25)
-				break;
+			if (abs(point_x1 - point_x2) > 1.0)break;
+			if (abs(point_x1 - point_x3) > 1.0)break;
+			if (abs(point_x2 - point_x4) > 1.0)break;
 
 			output_px[k] = (point_x1 + point_x2 + point_x3 + point_x4) / 4;
 			output_py[k] = (point_y1 + point_y2 + point_y3 + point_y4) / 4;
@@ -183,15 +174,16 @@ int main(int argc, const char* argv[])
 	char *tp1, *tp2;
 	int counter_m = 0;
 	int i, j;
+	int output_counter = 0;
 
 	//ウィンドウサイズは960:540
 	double rec_x1 = 0.0 + 50.0, rec_y1 = 0.0 + 50.0; //部屋の描写
-	double rec_x2 = 960.0 - 50.0, rec_y2 = 540.0 - 50.0;
+	double rec_x2 = ROOM_W * 100.0 + 50.0, rec_y2 = ROOM_H * 100.0 + 50.0;
 
 
 	errno_t error;
 
-	fopen_s(&fp4, max, "a");
+	printf("テキストを2種類読み込みdataフォルダに連番画像を出力します。\n");
 
 	/*ファイル読み込み　1回目*/
 	printf("読み込むテキストファイル名を入力してください\n");
@@ -308,14 +300,14 @@ int main(int argc, const char* argv[])
 		// フレーム　切り替え
 		d_camera(left_x1, left_x2, right_x1, right_x2, output_px, output_py);
 
-		//cv::Mat img(cv::Size(960, 540), CV_8UC3, cv::Scalar(255, 255, 255));
-		//cv::namedWindow("ROOM", cv::WINDOW_AUTOSIZE);
-		//cv::rectangle(img, cv::Point(rec_x1, rec_y1), cv::Point(rec_x2, rec_y2), cv::Scalar(0, 0, 0), 2, 4); //部屋の描写
-		//cv::circle(img, cv::Point( (c_x_1/ ROOM_W )* (rec_x2 - rec_x1) + rec_x1, rec_y2), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ1
-		//cv::putText(img, "camera 1", cv::Point((c_x_1 / ROOM_W)* (rec_x2 - rec_x1) + 30 + rec_x1, rec_y2), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
+		cv::Mat img(cv::Size(rec_x2 + 50, rec_y2 + 50), CV_8UC3, cv::Scalar(255, 255, 255));
+		cv::namedWindow("ROOM", cv::WINDOW_AUTOSIZE);
+		cv::rectangle(img, cv::Point(rec_x1, rec_y1), cv::Point(rec_x2, rec_y2), cv::Scalar(0, 0, 0), 2, 4); //部屋の描写
+		cv::circle(img, cv::Point( (c_x_1/ ROOM_W )* (rec_x2 - rec_x1) + rec_x1, rec_y2), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ1
+		cv::putText(img, "camera 1", cv::Point((c_x_1 / ROOM_W)* (rec_x2 - rec_x1) + 30 + rec_x1, rec_y2), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
 
-		//cv::circle(img, cv::Point( (c_x_2 / ROOM_W)* (rec_x2 - rec_x1)+rec_x1, rec_y1), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ2
-		//cv::putText(img, "camera 2", cv::Point((c_x_2 / ROOM_W) * (rec_x2 - rec_x1) + 30 + rec_x1, rec_y1), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
+		cv::circle(img, cv::Point( (c_x_2 / ROOM_W)* (rec_x2 - rec_x1)+rec_x1, rec_y1), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ2
+		cv::putText(img, "camera 2", cv::Point((c_x_2 / ROOM_W) * (rec_x2 - rec_x1) + 30 + rec_x1, rec_y1), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
 
 
 		
@@ -326,9 +318,13 @@ int main(int argc, const char* argv[])
 			fprintf(fp3, "%2.2f ", output_px[i]);
 			fprintf(fp3, "%2.2f\n", output_py[i]);
 
-			//cv::circle(img, cv::Point((output_px[i] / ROOM_W)* (rec_x2 - rec_x1) + rec_x1, ((ROOM_H - output_py[i]) / ROOM_H)* (rec_y2 - rec_y1) + rec_y1), 7, cv::Scalar(0, 0, 0), -1, CV_AA);//人物位置
-			//cv::imshow("ROOM", img);
-			//cv::waitKey(15);
+			//cv::circle(img, cv::Point((output_px[i] / ROOM_W)* (rec_x2 - rec_x1) + rec_x1, 
+			//	((ROOM_H - output_py[i]) / ROOM_H)* (rec_y2 - rec_y1) + rec_y1), 7, cv::Scalar(0, 0, 0), -1, CV_AA);//人物位置
+			cv::circle(img, cv::Point(output_px[i]*100, rec_y2 - output_py[i]*100), 7, cv::Scalar(0, 0, 0), -1, CV_AA);//人物位置
+			cv::imshow("ROOM", img);
+			output_counter++;
+			cv::imwrite("data/output_"+ std::to_string(output_counter) +".png",img);
+			cv::waitKey(15);
 		}
 
 		fprintf(fp3, "\n");
