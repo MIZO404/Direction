@@ -12,9 +12,9 @@
 #include <stdlib.h>
 #include <Windows.h>
 
-//部屋の広さ コアルーム 8.34*6.79
-#define ROOM_H 6.0 //変更
-#define ROOM_W 8.34
+//部屋の広さ コアルーム 8.41 * 6.59
+#define ROOM_H 6.59 //変更
+#define ROOM_W 8.41 //
 #define ROOM_CX 16.68
 #define ROOM_CY 13.58
 
@@ -31,14 +31,14 @@
 
 //カメラの設置の高さ(m) カメラ#1 左下0,0
 #define c_z_1 2.5  //高さ
-#define c_y_1 0.0  //縦 6.29
-#define c_x_1 5.84 //横
+#define c_y_1 0.74  //縦
+#define c_x_1 6.02 //横
 #define c_r_1 270
 
 //カメラの設置の高さ(m) カメラ#2 左下0,0
 #define c_z_2 2.5  //高さ
-#define c_y_2 6.29 //縦
-#define c_x_2 4.84 //横
+#define c_y_2 5.57 //縦
+#define c_x_2 3.49 //横
 #define c_r_2 90
 
 //#define deg_to_rad(deg) (((deg)/360)*2*M_PI)
@@ -54,11 +54,11 @@ double room(double width, double height1)
 
 double deg_trans(double rad)
 {
-	if (rad < 0)rad = ( (int)rad % 360) + 360.0;
+	if (rad < 0)rad = ((int)rad % 360) + 360.0;
 	return rad;
 }
 
-double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double rightx_2[p], double output_px[p], double output_py[p])
+double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double rightx_2[p], double height1[p], double height2[p], double output_px[p], double output_py[p], double ptx[30][4], double pty[30][4], double room[12][16], double past_px[p], double past_py[p],double past_ph[p])
 {
 	double point_x1 = 0.0, point_y1 = 0.0;
 	double point_x2 = 0.0, point_y2 = 0.0;
@@ -66,19 +66,20 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 	double point_x4 = 0.0, point_y4 = 0.0;
 	double men = 0.0;
 	int k = 0;
+	double line1 = 0.0, line2 = 0.0, line3 = 0.0, line4 = 0.0, line5 = 0.0, line6 = 0.0;
+	double line_ave = 0.0;
 	// 部屋の左下を0,0とする 向かい合うカメラは　2　と仮定する
 	// 2直線の交点 ((d-b)/(a-c),(ad-bc)/(a-c))
 	// y = ax+b, y = cx+d のとき
 	//d = c_x_2 - c_y_2		b = c_x_1 - c_y_2
 	//test
-	double a1, a2, a3, a4, c1, c2, c3, c4, b, d;
-
+	double a1, a2, a3, a4, a5, c1, c2, c3, c4, c5, b, d;
 	for (int i = 0; (leftx_1[i] != NULL); i++)
 	{
 
 		for (int j = 0; (leftx_2[j] != NULL); j++)
 		{//test
-
+			printf("test");
 			/*点A	leftx_1,leftx_2	の交点	*/
 			a1 = tan(deg_to_rad(deg_trans(c_r_1 - ((leftx_1[i] * 360) / 3860)))); //直線の傾き #1
 			c1 = tan(deg_to_rad(deg_trans(c_r_2 - ((leftx_2[j] * 360) / 3860)))); //直線の傾き #2
@@ -89,9 +90,10 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 			point_x1 = (d - b) / (a1 - c1);
 			point_y1 = (a1 * d - b * c1) / (a1 - c1);
 
+			printf("point x %2.2f\n", point_x1);
 			/*対象外条件*/
-			if (0 > point_x1 || point_x1 > ROOM_W)break;
-			if (0 > point_y1 || point_y1 > ROOM_H)break;
+			if (0 > point_x1 || point_x1 > ROOM_W)continue;
+			if (0 > point_y1 || point_y1 > ROOM_H)continue;
 
 			/*点2	leftx_1, rightx_2 の交点*/
 			a2 = tan(deg_to_rad(deg_trans(c_r_1 - ((leftx_1[i] * 360) / 3860))));  //直線の傾き #1
@@ -104,8 +106,8 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 			point_y2 = (a2 * d - b * c2) / (a2 - c2);
 
 			/*対象外条件*/
-			if (0 > point_x2 || point_x2 > ROOM_W)break;
-			if (0 > point_y2 || point_y2 > ROOM_H)break;
+			if (0 > point_x2 || point_x2 > ROOM_W)continue;
+			if (0 > point_y2 || point_y2 > ROOM_H)continue;
 
 			/*点3	rightx_1, rightx_2 の交点*/
 			a3 = tan(deg_to_rad(deg_trans(c_r_1 - ((rightx_1[i] * 360) / 3860)))); //直線の傾き #1
@@ -118,8 +120,8 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 			point_y3 = (a3 * d - b * c3) / (a3 - c3);
 
 			/*対象外条件*/
-			if (0 > point_x3 || point_x3 > ROOM_W)break;
-			if (0 > point_y3 || point_y3 > ROOM_H)break;
+			if (0 > point_x3 || point_x3 > ROOM_W)continue;
+			if (0 > point_y3 || point_y3 > ROOM_H)continue;
 
 			/*点4	leftx_2, rightx_1 の交点*/
 			a4 = tan(deg_to_rad(deg_trans(c_r_1 - ((rightx_1[i] * 360) / 3860)))); //直線の傾き #1
@@ -132,30 +134,83 @@ double d_camera(double leftx_1[p], double leftx_2[p], double rightx_1[p], double
 			point_y4 = (a4 * d - b * c4) / (a4 - c4);
 
 			/*対象外条件*/
-			if (0 > point_x4 || point_x4 > ROOM_W)break;
-			if (0 > point_y4 || point_y4 > ROOM_H)break;
+			if (0 > point_x4 || point_x4 > ROOM_W)continue;
+			if (0 > point_y4 || point_y4 > ROOM_H)continue;
 
-			men = (point_x4 - point_x2) * (point_y4 - point_y3) - 1 / 2 * ((point_x1 - point_x2) * (point_y4 - point_y2) + (point_x3 - point_x1) * (point_y2 - point_y3) + (point_x4 - point_x2) * (point_y4 - point_y1));
-			if (men > 0.25)break;
+			//men = (point_x4 - point_x2) * (point_y4 - point_y3) - 1 / 2 * ((point_x1 - point_x2) * (point_y4 - point_y2) + (point_x3 - point_x1) * (point_y2 - point_y3) + (point_x4 - point_x2) * (point_y4 - point_y1));
+			men = abs(((point_x1 - point_x2) * (point_y1 + point_y2) + (point_x2 - point_x3) * (point_y2 + point_y3) + (point_x3 - point_x4) * (point_y3 + point_y4) + (point_x4 - point_x1) * (point_y4 + point_y1)) / 2);
+			//printf("面積　%2.2lf\n",men);
+			if (men < 0.2 || men > 0.7)continue;
 
-			if (abs(point_x1 - point_x2) > 1.0)break;
-			if (abs(point_x1 - point_x3) > 1.0)break;
-			if (abs(point_x2 - point_x4) > 1.0)break;
+			line1 = sqrt(pow(point_x1 - point_x2, 2) + pow(point_y1 - point_y2, 2));
+			line2 = sqrt(pow(point_x1 - point_x3, 2) + pow(point_y1 - point_y3, 2));
+			line3 = sqrt(pow(point_x1 - point_x4, 2) + pow(point_y1 - point_y4, 2));
+			line4 = sqrt(pow(point_x2 - point_x3, 2) + pow(point_y2 - point_y3, 2));
+			line5 = sqrt(pow(point_x2 - point_x4, 2) + pow(point_y2 - point_y4, 2));
+			line6 = sqrt(pow(point_x3 - point_x4, 2) + pow(point_y3 - point_y4, 2));
+			line_ave = (line1 + line2 + line3 + line4 + line5 + line6) / 6;
+			double line_thres = 0.7;
 
-			output_px[k] = (point_x1 + point_x2 + point_x3 + point_x4) / 4;
-			output_py[k] = (point_y1 + point_y2 + point_y3 + point_y4) / 4;
+			if (line1 > 1.5 || (line_ave + line_thres < line1 || line1 < line_ave - line_thres))continue; //1-2
+			if (line2 > 1.5 || (line_ave + line_thres < line2 || line2 < line_ave - line_thres))continue; //1-3
+			if (line3 > 1.5 || (line_ave + line_thres < line3 || line3 < line_ave - line_thres))continue; //1-4
+			if (line4 > 1.5 || (line_ave + line_thres < line4 || line4 < line_ave - line_thres))continue; //2-3
+			if (line5 > 1.5 || (line_ave + line_thres < line5 || line5 < line_ave - line_thres))continue; //2-4
+			if (line6 > 1.5 || (line_ave + line_thres < line6 || line6 < line_ave - line_thres))continue; //3-4 //√2を考慮して1.5
 
+			double tri_x1 = (point_x1 + point_x2 + point_x3) / 3;
+			double tri_y1 = (point_y1 + point_y2 + point_y3) / 3;
+			double tri_x2 = (point_x1 + point_x3 + point_x4) / 3;
+			double tri_y2 = (point_y1 + point_y3 + point_y4) / 3;
+
+
+			//output_px[k] = (tri_x1 + tri_x2) / 2;
+			//output_py[k] = (tri_y1 + tri_y2) / 2;
+
+			// 許容範囲を1.0mと仮定
+			for (int l = 0; l<p;l++)
+			{
+
+				if (past_px[l] == NULL || (past_px[l] - 0.3 <= (tri_x1 + tri_x2) / 2 && (tri_x1 + tri_x2) / 2 <= past_px[l] + 0.3)
+					&& (past_py[l] - 0.5 <= (tri_y1 + tri_y2) / 2 && (tri_y1 + tri_y2) / 2 <= past_py[l] + 0.5)
+					/*|| (past_ph[l] - 0.5 <= height1[k] && height1[k] <= past_ph[l] + 0.5)*/)
+				{
+					output_px[k] = (tri_x1 + tri_x2) / 2;
+					output_py[k] = (tri_y1 + tri_y2) / 2;
+
+					past_px[l] = output_px[k];
+					past_py[l] = output_py[k];
+				}
+				else {
+					continue;
+				}
+			}
+
+
+			printf("%d %2.2f,%2.2f\n", k, output_px[k], output_py[k]);
+
+			ptx[k][0] = point_x1;
+			ptx[k][1] = point_x2;
+			ptx[k][2] = point_x3;
+			ptx[k][3] = point_x4;
+
+			pty[k][0] = point_y1;
+			pty[k][1] = point_y2;
+			pty[k][2] = point_y3;
+			pty[k][3] = point_y4;
 			k++;
 		}
+		printf("\n");
 	}
 	return 0;
+
 }
 
 int main(int argc, const char* argv[])
 {
-	FILE *fp1 = NULL; // FILE型構造体 読み込む方 #1
-	FILE *fp2 = NULL; // FILE型構造体 読み込む方 #2
-	FILE *fp3 = NULL; // 出力用ファイル
+	FILE* fp1 = NULL; // FILE型構造体 読み込む方 #1
+	FILE* fp2 = NULL; // FILE型構造体 読み込む方 #2
+	FILE* fp3 = NULL; // 出力用ファイル
 	/*ファイル名*/
 	char fname1[256] = {}; // 読み込みファイル名 #1
 	char fname2[256] = {}; // 読み込みファイル名 #2
@@ -168,10 +223,16 @@ int main(int argc, const char* argv[])
 	char readline1[LineMax] = {};
 	char readline2[LineMax] = {};
 	char delim[] = ", "; //区切り文字
-	char *tp1, *tp2;
+	char* tp1, * tp2;
 	int i, j;
 	int output_counter = 0;
 	char point_text[255] = {};
+
+	double room[12][16] = { 0.0 };
+
+	double tmp_pointx[30][4] = {};
+	double tmp_pointy[30][4] = {};
+	cv::Point out_point[4];
 
 	//ウィンドウサイズ
 	double rec_x1 = 0.0 + 50.0, rec_y1 = 0.0 + 50.0; //部屋の描写
@@ -234,8 +295,9 @@ int main(int argc, const char* argv[])
 		person_num1[30] = {};
 		person_num2[30] = {};
 		double output_px[255] = {}, output_py[255] = {};
-		char *ctx1 = NULL;
-		char *ctx2 = NULL;
+		double past_px[255] = {}, past_py[255] = {}, past_ph[255] = {};
+		char* ctx1 = NULL;
+		char* ctx2 = NULL;
 		i = 0;
 		j = 0;
 		while (1)
@@ -283,6 +345,7 @@ int main(int argc, const char* argv[])
 			/*2回目：x座標(左) #2 */
 			tp2 = strtok_s(NULL, delim, &ctx2);
 			left_x2[j] = atof(tp2);
+			printf("left_x2[j] = %2.2f\n\n", left_x2[j]);
 
 			/*3回目：x座標(右) #2 */
 			tp2 = strtok_s(NULL, delim, &ctx2);
@@ -298,37 +361,46 @@ int main(int argc, const char* argv[])
 			counter++;
 		}
 		// フレーム　切り替え
-		d_camera(left_x1, left_x2, right_x1, right_x2, output_px, output_py);
+		d_camera(left_x1, left_x2, right_x1, right_x2, height1, height2, output_px, output_py, tmp_pointx, tmp_pointy, room, past_px, past_py,past_ph);
+		printf("フレーム切り替え\n");
 
 		cv::Mat img(cv::Size(rec_x2 + 450, rec_y2 + 50), CV_8UC3, cv::Scalar(255, 255, 255));
 		cv::namedWindow("ROOM", cv::WINDOW_AUTOSIZE);
 		cv::rectangle(img, cv::Point(rec_x1, rec_y1), cv::Point(rec_x2, rec_y2), cv::Scalar(0, 0, 0), 2, 4); //部屋の描写
-		cv::circle(img, cv::Point( (c_x_1/ ROOM_W )* (rec_x2 - rec_x1) + rec_x1, rec_y2), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ1
-		cv::putText(img, "camera 1", cv::Point((c_x_1 / ROOM_W)* (rec_x2 - rec_x1) + 30 + rec_x1, rec_y2), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
+		cv::circle(img, cv::Point(c_x_1 * 100.0+rec_x1, rec_y2 - c_y_1 * 100.0), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ1
+		cv::putText(img, "camera 1", cv::Point(c_x_1 * 100.0 + 50.0, rec_y2 - c_y_1 * 100.0), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
 
-		cv::circle(img, cv::Point( (c_x_2 / ROOM_W)* (rec_x2 - rec_x1)+rec_x1, rec_y1), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ2
-		cv::putText(img, "camera 2", cv::Point((c_x_2 / ROOM_W) * (rec_x2 - rec_x1) + 30 + rec_x1, rec_y1), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
+		cv::circle(img, cv::Point(c_x_2 * 100.0+rec_x1, ROOM_H * 100.0 - c_y_2 * 100.0), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ2
+		cv::putText(img, "camera 2", cv::Point(c_x_2 * 100.0 + 50.0, ROOM_H * 100.0 - c_y_2 * 100.0), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
 
 
-		
-
-		for (int i = 0; output_px[i] != '\0' || output_py[i] != '\0'; i++)
+		for (int i = 0; output_px[i] != '\0' && output_py[i] != '\0'; i++)
 		{
 			output_counter++;
 
 			fprintf(fp3, "%2.2f ", output_px[i]);
 			fprintf(fp3, "%2.2f\n", output_py[i]);
 
-			flame_pointx[i]=output_px[i];
-			cv::circle(img, cv::Point(output_px[i]*100, rec_y2 - output_py[i]*100), 7, cv::Scalar(0, 0, 0), -1, CV_AA);//人物位置
-			
-			sprintf_s(point_text,255,"%d x:%2.2f  y:%2.2f",i,output_px[i],output_py[i]);
-			cv::putText(img, point_text, cv::Point(rec_x2 + 30,rec_y1 + i * 30 ), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
-			cv::imshow("ROOM", img);
-			
-			cv::imwrite("data/output_"+ std::to_string(output_counter) +".png",img);
-			cv::waitKey(60);
+			//printf("count\n");
+
+			flame_pointx[i] = output_px[i];
+			out_point[0] = cv::Point(tmp_pointx[i][0] * 100.0 + rec_x1, rec_y2 - tmp_pointy[i][0] * 100);
+			out_point[1] = cv::Point(tmp_pointx[i][1] * 100.0 + rec_x1, rec_y2 - tmp_pointy[i][1] * 100);
+			out_point[2] = cv::Point(tmp_pointx[i][2] * 100.0 + rec_x1, rec_y2 - tmp_pointy[i][2] * 100);
+			out_point[3] = cv::Point(tmp_pointx[i][3] * 100.0 + rec_x1, rec_y2 - tmp_pointy[i][3] * 100);
+
+			cv::fillConvexPoly(img, out_point, 4, cv::Scalar(255, 255, 0));
+			cv::circle(img, cv::Point(output_px[i] * 100 + rec_x1, rec_y2 - output_py[i] * 100), 7, cv::Scalar(0, 0, 0), -1, CV_AA);//人物位置
+
+			sprintf_s(point_text, 255, "%d x:%2.2f  y:%2.2f", i, output_px[i], output_py[i]);
+			cv::putText(img, point_text, cv::Point(rec_x2 + 30, rec_y1 + (double)i * 30.0), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
+
+
+			cv::imwrite("data/output_" + std::to_string(output_counter) + ".png", img);
+
 		}
+		cv::imshow("ROOM", img);
+		cv::waitKey(30);
 
 		fprintf(fp3, "\n");
 	}
