@@ -325,6 +325,7 @@ int main(int argc, const char* argv[])
 			i++;
 			//printf("i = %d\n",i);
 			fgets(readline1, sizeof(readline1), fp1);
+			//1211
 		}
 
 		//printf("テキスト切り替え\n");
