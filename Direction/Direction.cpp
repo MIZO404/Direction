@@ -607,7 +607,7 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 		left_rad1 = deg_to_rad(left_deg1);
 		right_rad1 = deg_to_rad(right_deg1);
 
-		printf("カメラ１確認用\n");
+		/*printf("カメラ１確認用\n");
 		printf("leftx_1[n] = %lf\n", leftx_1[n]);
 		printf("rightx_1[n] = %lf\n", rightx_1[n]);
 
@@ -615,14 +615,19 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 		printf("right_deg1 = %lf\n", right_deg1);
 
 		printf("left_rad1 = %lf\n", left_rad1);
-		printf("right_rad1 = %lf\n", right_rad1);
+		printf("right_rad1 = %lf\n", right_rad1);*/
 
 
 		// 確率密度関数に入れていく　17*13
 		for (int i = 0; i < 17; i++) {
-			point_c1 = (int)((left_rad1 * (i*0.5)) + (c_x_1 - left_rad1 * c_y_1))*2;
+			point_c1 = (int)((left_rad1 * ((double)i*0.5)) + (c_x_1 - left_rad1 * c_y_1))*2;
 			if (0 <= point_c1 && point_c1 <= 13) {
 				room_c1[point_c1][i] = (room_c1[point_c1][i] + 1.0) / 2.0;
+			}
+			else {
+				for (int j = 0; j < 13; j++) {
+					room_c1[j][i] = room_c1[j][i] / 2.0;
+				}
 			}
 			//printf("test = %d\n",point_c1);
 		}
@@ -639,7 +644,7 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 		left_rad2 = deg_to_rad(left_deg2);
 		right_rad2 = deg_to_rad(right_deg2);
 
-		printf("カメラ2確認用\n");
+		/*printf("カメラ2確認用\n");
 		printf("leftx_2[n] = %lf\n", leftx_2[n]);
 		printf("rightx_2[n] = %lf\n", rightx_2[n]);
 
@@ -647,21 +652,26 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 		printf("right_deg2 = %lf\n", right_deg2);
 
 		printf("left_rad2 = %lf\n", left_rad2);
-		printf("right_rad2 = %lf\n", right_rad2);
+		printf("right_rad2 = %lf\n", right_rad2);*/
 
 
 		// 確率密度関数に入れていく　17*13
 		for (int i = 0; i < 17; i++) {
-			point_c2 = (int)((left_rad2 * (i*0.5)) + (c_x_2 - left_rad2 * c_y_2))*2;
+			point_c2 = (int)((left_rad2 * ((double)i*0.5)) + (c_x_2 - left_rad2 * c_y_2))*2;
 			if (0 <= point_c2 && point_c2 <= 13) {
 				room_c2[point_c2][i] = (room_c2[point_c2][i] + 1.0) / 2.0;
+			}
+			else {
+				for (int j = 0; j < 13; j++) {
+					room_c2[j][i] = room_c2[j][i] / 2.0;
+				}
 			}
 			//printf("test = %d\n",point_c1);
 		}
 	}
 
 
-		printf("計算結果2\n");
+		printf("計算結果\n");
 	for (int j = 0; j < 13; j++) {
 		for (int k = 0; k < 17; k++) {
 			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
@@ -857,12 +867,12 @@ int main()//int argc, const char* argv[]
 		//cv::putText(img, "camera 2", cv::Point(c_x_2 * 100.0 + 50.0, ROOM_H * 100.0 - c_y_2 * 100.0), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
 
 		//top5(room, person, d_top5);
-		if (d_top5[4] < 0.7)d_top5[3] = 0.5;
+		//if (d_top5[4] < 0.7)d_top5[3] = 0.5;
 
-		for (int j = 13; j > 0; j--) {
+		for (int j = 0; j < 13; j++) {
 			for (int k = 0; k < 17; k++) {
-				//if (room[j][k] > d_top5[4] )fprintf(fp4, "%d %d\n", j, k);
-				if (room[j][k] > d_top5[4])fprintf(fp4, "%d %d\n", j, k);
+				if (room[j][k] > 0.0)fprintf(fp4, "%d %d\n", j, k);
+				//if (room[j][k] > d_top5[4])fprintf(fp4, "%d %d\n", j, k);
 				fprintf(fp3, "%2.2lf ", room[j][k]);
 			}
 			fprintf(fp3, "\n");
@@ -902,9 +912,9 @@ int main()//int argc, const char* argv[]
 			}
 		}
 
-		for (int j = 13; j > 0; j--) {
+		for (int j = 0; j < 13; j++) {
 			for (int k = 0; k < 17; k++) {
-				if (room[j][k] > d_top5[4]) {
+				if (room[j][k] > 0.0) {
 					double wid = 0.5 * k * 50.0 + rec_x1;
 					double hei = 0.5 * j * 50.0 + rec_y1;
 					cv::Point pt[4];
@@ -914,7 +924,7 @@ int main()//int argc, const char* argv[]
 					pt[3] = cv::Point(wid, hei + 50.5);
 					/*pt[2] = cv::Point(400,400);
 					pt[3] = cv::Point(500,500);*/
-					printf("img");
+					//printf("img");
 					//cv::fillConvexPoly(img, pt, 4, cv::Scalar(255, 255, 185), -1, CV_AA);
 					cv::rectangle(img, pt[0], pt[2], cv::Scalar(255, 255, 185), -1, CV_AA);
 					//cv::rectangle(img, cv::Point(200, 350), cv::Point(300, 450), cv::Scalar(200, 0, 0), -1, CV_AA);
