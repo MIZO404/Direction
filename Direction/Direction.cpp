@@ -33,14 +33,14 @@
 #define c_z_1 2.5  //高さ
 #define c_y_1 0.74  //縦
 #define c_x_1 6.02 //横
-#define c_r_1 270
+#define c_r_1 270.0
 
 //カメラの設置の高さ(m) カメラ#2 左下0,0
 #define c_z_2 2.5  //高さ
 #define c_y_2 5.57 //縦
 //#define c_x_2 3.49 //横
 #define c_x_2 4.49 //横
-#define c_r_2 90
+#define c_r_2 90.0
 
 
 //#define deg_to_rad(deg) (((deg)/360)*2*M_PI)
@@ -61,41 +61,38 @@ double deg_trans(double rad)
 }
 
 double deg_adj_c1(double deg) {
-	//if (deg < 270.0)deg = 270.0 - deg;
-	//if (270.0 < deg && deg < 360.0)deg = 360.0 - deg + 270.0;
-	deg = deg + c_r_1;
-	if (360.0 < deg)deg = 360.0 - deg;
+	deg = c_r_1 - deg;
 	return deg;
 }
 
 double deg_adj_c2(double deg) {
-	/*if (deg < 90.0)deg = 90.0 - deg;
-	if (90.0 < deg)deg = 360.0 - deg + 90.0;*/
 	deg = deg + c_r_2;
-	if (360.0 < deg)deg = 360.0 - deg;
 	return deg;
 }
 
-double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double leftx_2[p],double rightx_2[p],double height[p],double room[14][18]) {
-	
-	double left_deg1 = 0.0,left_deg2 = 0.0;
+double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double leftx_2[p], double rightx_2[p], double height[p], double room[14][18]) {
+
+	double left_deg1 = 0.0, left_deg2 = 0.0;
 	double right_deg1 = 0.0, right_deg2 = 0.0;
 	double left_rad1 = 0.0, left_rad2 = 0.0;
 	double right_rad1 = 0.0, right_rad2 = 0.0;
-	double room_c1[14][18]={},room_c2[14][18] = {};
+	double room_c1[14][18] = {}, room_c2[14][18] = {};
 	int point_c1 = 0, point_c2 = 0;
+	int point_c1r = 0, point_c2r = 0;
 
 	// カメラの角度情報が入った配列を見ていく
 	for (int n = 0; leftx_1[n] != NULL; n++) {
 
 		/*camera 1*/
-		left_deg1 = deg_adj_c1(leftx_1[n] / 3860.0);
-		right_deg1 = deg_adj_c1(rightx_1[n] / 3860.0);
+		left_deg1 = deg_adj_c1((leftx_1[n] / 3860.0 )* 360.0 );
+		right_deg1 = deg_adj_c1((rightx_1[n] / 3860.0 )* 360.0 );
 
-		left_rad1 = deg_to_rad(left_deg1);
-		right_rad1 = deg_to_rad(right_deg1);
+		left_rad1 = tan(deg_to_rad(left_deg1));
+		right_rad1 = tan(deg_to_rad(right_deg1));
 
-		/*printf("カメラ１確認用\n");
+		point_c1 = 0.0;
+
+		printf("カメラ１確認用\n");
 		printf("leftx_1[n] = %lf\n", leftx_1[n]);
 		printf("rightx_1[n] = %lf\n", rightx_1[n]);
 
@@ -103,12 +100,22 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 		printf("right_deg1 = %lf\n", right_deg1);
 
 		printf("left_rad1 = %lf\n", left_rad1);
-		printf("right_rad1 = %lf\n", right_rad1);*/
+		printf("right_rad1 = %lf\n", right_rad1);
 
 
 		// 確率密度関数に入れていく　17*13
 		for (int i = 0; i < 17; i++) {
-			point_c1 = (int)((left_rad1 * ((double)i*0.5)) + (c_x_1 - left_rad1 * c_y_1))*2;
+			//point_c1 = (int)((left_rad1 * ((double)i*0.5)) + (c_x_1 - left_rad1 * c_y_1))*2;
+			point_c1 = (int)(left_rad1 * ((double)i * 0.5) + (c_y_1 - c_x_1 * left_rad1)) * 2;
+			point_c1 = 13 - point_c1;
+
+			point_c1r = (int)(right_rad1 * ((double)i * 0.5) + (c_y_1 - c_x_1 * right_rad1)) * 2;
+			point_c1r = 13 - point_c1r;
+
+			if (0 <= point_c1 && point_c1 <= 13) {
+				printf("point c1 = %d\n", point_c1);
+				printf("leftx_1 = %2.2f \n", leftx_1[n]);
+			}
 			if (0 <= point_c1 && point_c1 <= 13) {
 				room_c1[point_c1][i] = (room_c1[point_c1][i] + 1.0) / 2.0;
 			}
@@ -117,10 +124,31 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 					room_c1[j][i] = room_c1[j][i] / 2.0;
 				}
 			}
+
+			if (0 <= point_c1r && point_c1r <= 13) {
+				room_c1[point_c1r][i] = (room_c1[point_c1r][i] + 1.0) / 2.0;
+			}
+			else {
+				for (int j = 0; j < 13; j++) {
+					room_c1[j][i] = room_c1[j][i] / 2.0;
+				}
+			}
+
 			//printf("test = %d\n",point_c1);
 		}
-	}
 
+		for (int j = 0; j < 17;j++) {
+			for (int k = 0; k < 13;k++) {
+				if (room_c1[k][j] != 0.0 && k-1 > 0 && room_c1[k-1][j] == 0.0) {
+					room_c1[k - 1][j] = room_c1[k][j] / 2.0;
+				}
+				if (room_c1[k][j] != 0.0 && j - 1 > 0 && room_c1[k][j-1] == 0.0) {
+					room_c1[k][j-1] = room_c1[k][j] / 2.0;
+				}
+			}
+		}
+
+	}
 
 	// カメラの角度情報が入った配列を見ていく
 	for (int n = 0; leftx_2[n] != NULL; n++) {
@@ -131,6 +159,8 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 
 		left_rad2 = deg_to_rad(left_deg2);
 		right_rad2 = deg_to_rad(right_deg2);
+
+		point_c2 = 0.0;
 
 		/*printf("カメラ2確認用\n");
 		printf("leftx_2[n] = %lf\n", leftx_2[n]);
@@ -145,7 +175,17 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 
 		// 確率密度関数に入れていく　17*13
 		for (int i = 0; i < 17; i++) {
-			point_c2 = (int)((left_rad2 * ((double)i*0.5)) + (c_x_2 - left_rad2 * c_y_2))*2;
+			//y軸　反転させる
+			point_c2 = (int)(left_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * left_rad2)) * 2;
+			point_c2 = 13 - point_c2;
+
+			point_c2r = (int)(right_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * right_rad2)) * 2;
+			point_c2r = 13 - point_c2r;
+
+			if (0 <= point_c2 && point_c2 <= 13) {
+				printf("point c2 = %d\n", point_c2);
+				printf("leftx_2 = %2.2f \n", leftx_2[n]);
+			}
 			if (0 <= point_c2 && point_c2 <= 13) {
 				room_c2[point_c2][i] = (room_c2[point_c2][i] + 1.0) / 2.0;
 			}
@@ -154,18 +194,37 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 					room_c2[j][i] = room_c2[j][i] / 2.0;
 				}
 			}
-			//printf("test = %d\n",point_c1);
+			if (0 <= point_c2r && point_c2r <= 13) {
+				room_c2[point_c2r][i] = (room_c2[point_c2r][i] + 1.0) / 2.0;
+			}
+			else {
+				for (int j = 0; j < 13; j++) {
+					room_c2[j][i] = room_c2[j][i] / 2.0;
+				}
+			}
 		}
+
+		for (int j = 0; j < 17; j++) {
+			for (int k = 0; k < 13; k++) {
+				if (room_c2[k][j] != 0.0 && k - 1 > 0 && room_c2[k - 1][j] == 0.0) {
+					room_c2[k - 1][j] = room_c2[k][j] / 2.0;
+				}
+				if (room_c2[k][j] != 0.0 && j - 1 > 0 && room_c2[k][j - 1] == 0.0) {
+					room_c2[k][j - 1] = room_c2[k][j] / 2.0;
+				}
+			}
+		}
+
 	}
 
 
-		printf("計算結果\n");
+	printf("計算結果\n");
 	for (int j = 0; j < 13; j++) {
 		for (int k = 0; k < 17; k++) {
 			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
 			//閾値を0.5に仮定
 			//if (room[j][k] < 0.4)room[j][k] = 0.0;
-			//room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
+			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
 			printf("%2.2lf ", room[j][k]);
 		}
 		printf("\n");
@@ -308,7 +367,7 @@ int main()//int argc, const char* argv[]
 		fgets(readline2, sizeof(readline2), fp2);
 		while (1)
 		{
-			/*1回目：ナンバー #2 */
+			/*2回目：ナンバー #2 */
 			tp2 = readline2;
 			tp2 = strtok_s(readline2, delim, &ctx2);
 			person_num2[j] = atoi(tp2);
@@ -338,24 +397,13 @@ int main()//int argc, const char* argv[]
 			counter++;
 		}
 		// フレーム　切り替え
-		//d_camera(left_x1, left_x2, right_x1, right_x2, height1, height2, output_px, output_py, tmp_pointx, tmp_pointy, rad_room, past_px, past_py, past_ph);
-		//d_room(left_x1, left_x2, right_x1, right_x2, height1, height2, output_px, output_py, tmp_pointx, tmp_pointy, room, past_px, past_py, past_ph, rad_room);
-		//d_room(left_x1, left_x2, right_x1, right_x2, height1, height2, output_px, output_py, tmp_pointx, tmp_pointy, room, past_px, past_py, past_ph, rad_room);
-		camera1(left_x1,right_x1,height1,left_x2,right_x2,height2,room);
+		camera1(left_x1, right_x1, height1, left_x2, right_x2, height2, room);
 
 		//printf("フレーム切り替え\n");
 
 		cv::Mat img(cv::Size(rec_x2 + 450, rec_y2 + 50), CV_8UC3, cv::Scalar(255, 255, 255));
 		cv::namedWindow("ROOM", cv::WINDOW_AUTOSIZE);
 		cv::rectangle(img, cv::Point(rec_x1, rec_y1), cv::Point(rec_x2, rec_y2), cv::Scalar(0, 0, 0), 2, 4); //部屋の描写
-		//cv::circle(img, cv::Point(c_x_1 * 100.0 + rec_x1, rec_y2 - c_y_1 * 100.0), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ1
-		//cv::putText(img, "camera 1", cv::Point(c_x_1 * 100.0 + 50.0, rec_y2 - c_y_1 * 100.0), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
-
-		//cv::circle(img, cv::Point(c_x_2 * 100.0 + rec_x1, ROOM_H * 100.0 - c_y_2 * 100.0), 10, cv::Scalar(0, 0, 0), 2, 4);//カメラ2
-		//cv::putText(img, "camera 2", cv::Point(c_x_2 * 100.0 + 50.0, ROOM_H * 100.0 - c_y_2 * 100.0), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
-
-		//top5(room, person, d_top5);
-		//if (d_top5[4] < 0.7)d_top5[3] = 0.5;
 
 		for (int j = 0; j < 13; j++) {
 			for (int k = 0; k < 17; k++) {
@@ -367,25 +415,6 @@ int main()//int argc, const char* argv[]
 		}
 		fprintf(fp3, "\n");
 		fprintf(fp4, "\n");
-
-
-		//printf("\n");
-
-		//for (int i = 0; output_px[i] != '\0' && output_py[i] != '\0'; i++)
-		//{
-		//	output_counter++;
-
-		//	fprintf(fp3, "%2.2f ", output_px[i]);
-		//	fprintf(fp3, "%2.2f\n", output_py[i]);
-
-		//	//printf("count\n");
-
-		//	flame_pointx[i] = output_px[i];
-
-		//	cv::circle(img, cv::Point(output_px[i] * 100 + rec_x1, rec_y2 - output_py[i] * 100), 7, cv::Scalar(0, 0, 0), -1, CV_AA);//人物位置
-
-		//	sprintf_s(point_text, 255, "%d x:%2.2f  y:%2.2f", i, output_px[i], output_py[i]);
-		//	cv::putText(img, point_text, cv::Point(rec_x2 + 30, rec_y1 + (double)i * 30.0), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 200), 2, CV_AA);
 
 		for (int j = 1; j < 14; j++) {
 			for (int k = 1; k < 17; k++) {
@@ -402,7 +431,7 @@ int main()//int argc, const char* argv[]
 
 		for (int j = 0; j < 13; j++) {
 			for (int k = 0; k < 17; k++) {
-				if (room[j][k] > 0.0) {
+				if (room[j][k] > 0.4) {
 					double wid = 0.5 * k * 50.0 + rec_x1;
 					double hei = 0.5 * j * 50.0 + rec_y1;
 					cv::Point pt[4];
@@ -410,13 +439,7 @@ int main()//int argc, const char* argv[]
 					pt[1] = cv::Point(wid + 50.5, hei);
 					pt[2] = cv::Point(wid + 25.5, hei + 25.5);
 					pt[3] = cv::Point(wid, hei + 50.5);
-					/*pt[2] = cv::Point(400,400);
-					pt[3] = cv::Point(500,500);*/
-					//printf("img");
-					//cv::fillConvexPoly(img, pt, 4, cv::Scalar(255, 255, 185), -1, CV_AA);
 					cv::rectangle(img, pt[0], pt[2], cv::Scalar(255, 255, 185), -1, CV_AA);
-					//cv::rectangle(img, cv::Point(200, 350), cv::Point(300, 450), cv::Scalar(200, 0, 0), -1, CV_AA);
-					//cv::imshow("ROOM", img);
 				}
 			}
 		}
@@ -425,14 +448,6 @@ int main()//int argc, const char* argv[]
 		cv::imshow("ROOM", img);
 		cv::waitKey(30);
 		cv::imwrite("data/output_" + std::to_string(output_counter) + ".png", img);
-		//output_counter++;
-		////cv::imwrite("data/output_" + std::to_string(output_counter) + ".png", img);
-		//cv::imshow("ROOM", img);
-
-
-		//cv::waitKey(30);
-
-		//fprintf(fp3, "\n");
 	}
 
 	fclose(fp1);
