@@ -92,15 +92,15 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 
 		point_c1 = 0.0;
 
-		printf("カメラ１確認用\n");
-		printf("leftx_1[n] = %lf\n", leftx_1[n]);
-		printf("rightx_1[n] = %lf\n", rightx_1[n]);
+		//printf("カメラ１確認用\n");
+		//printf("leftx_1[n] = %lf\n", leftx_1[n]);
+		//printf("rightx_1[n] = %lf\n", rightx_1[n]);
 
-		printf("left_deg1 = %lf\n", left_deg1);
-		printf("right_deg1 = %lf\n", right_deg1);
+		//printf("left_deg1 = %lf\n", left_deg1);
+		//printf("right_deg1 = %lf\n", right_deg1);
 
-		printf("left_rad1 = %lf\n", left_rad1);
-		printf("right_rad1 = %lf\n", right_rad1);
+		//printf("left_rad1 = %lf\n", left_rad1);
+		//printf("right_rad1 = %lf\n", right_rad1);
 
 
 		// 確率密度関数に入れていく　17*13
@@ -112,10 +112,10 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 			point_c1r = (int)(right_rad1 * ((double)i * 0.5) + (c_y_1 - c_x_1 * right_rad1)) * 2;
 			point_c1r = 13 - point_c1r;
 
-			if (0 <= point_c1 && point_c1 <= 13) {
+			/*if (0 <= point_c1 && point_c1 <= 13) {
 				printf("point c1 = %d\n", point_c1);
 				printf("leftx_1 = %2.2f \n", leftx_1[n]);
-			}
+			}*/
 			if (0 <= point_c1 && point_c1 <= 13) {
 				room_c1[point_c1][i] = (room_c1[point_c1][i] + 1.0) / 2.0;
 			}
@@ -137,13 +137,21 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 			//printf("test = %d\n",point_c1);
 		}
 
+
+		/*隣接するセルに値が入っていたら1/2の値を入れる*/
 		for (int j = 0; j < 17;j++) {
 			for (int k = 0; k < 13;k++) {
 				if (room_c1[k][j] != 0.0 && k-1 > 0 && room_c1[k-1][j] == 0.0) {
-					room_c1[k - 1][j] = room_c1[k][j] / 2.0;
+					room_c1[k - 1][j] = ( room_c1[k][j] + room_c1[k-1][j]) / 2.0;
 				}
 				if (room_c1[k][j] != 0.0 && j - 1 > 0 && room_c1[k][j-1] == 0.0) {
-					room_c1[k][j-1] = room_c1[k][j] / 2.0;
+					room_c1[k][j-1] = (room_c1[k][j] + room_c1[k][j-1]) / 2.0;
+				}
+				if (room_c1[k][j] != 0.0 && k + 1 < 13 && room_c1[k+1][j] == 0.0) {
+					room_c1[k + 1][j] = (room_c1[k][j] + room_c1[k + 1][j]) / 2.0;
+				}
+				if (room_c1[k][j] != 0.0 && j + 1 < 17 && room_c1[k][j+1] == 0.0) {
+					room_c1[k][j + 1] = (room_c1[k][j] + room_c1[k][j+1]) / 2.0;
 				}
 			}
 		}
@@ -175,42 +183,53 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 
 		// 確率密度関数に入れていく　17*13
 		for (int i = 0; i < 17; i++) {
+//		for (int i = 17; i > 0; i--) {
+
 			//y軸　反転させる
 			point_c2 = (int)(left_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * left_rad2)) * 2;
+			//point_c2 = (int)(left_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * left_rad2)) * 2;
 			point_c2 = 13 - point_c2;
 
 			point_c2r = (int)(right_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * right_rad2)) * 2;
+			//point_c2r = (int)(right_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * right_rad2)) * 2;
 			point_c2r = 13 - point_c2r;
 
-			if (0 <= point_c2 && point_c2 <= 13) {
+			/*if (0 <= point_c2 && point_c2 <= 13) {
 				printf("point c2 = %d\n", point_c2);
 				printf("leftx_2 = %2.2f \n", leftx_2[n]);
-			}
+			}*/
 			if (0 <= point_c2 && point_c2 <= 13) {
-				room_c2[point_c2][i] = (room_c2[point_c2][i] + 1.0) / 2.0;
+				room_c2[point_c2][17-i] = (room_c2[point_c2][17 - i] + 1.0) / 2.0;
 			}
 			else {
 				for (int j = 0; j < 13; j++) {
-					room_c2[j][i] = room_c2[j][i] / 2.0;
+					room_c2[j][17 - i] = room_c2[j][17 - i] / 2.0;
 				}
 			}
 			if (0 <= point_c2r && point_c2r <= 13) {
-				room_c2[point_c2r][i] = (room_c2[point_c2r][i] + 1.0) / 2.0;
+				room_c2[point_c2r][17 - i] = (room_c2[point_c2r][17 - i] + 1.0) / 2.0;
 			}
 			else {
 				for (int j = 0; j < 13; j++) {
-					room_c2[j][i] = room_c2[j][i] / 2.0;
+					room_c2[j][17 - i] = room_c2[j][17 - i] / 2.0;
 				}
 			}
 		}
 
+		/*隣接するセルに値が入っていたら1/2の値を入れる*/
 		for (int j = 0; j < 17; j++) {
 			for (int k = 0; k < 13; k++) {
-				if (room_c2[k][j] != 0.0 && k - 1 > 0 && room_c2[k - 1][j] == 0.0) {
-					room_c2[k - 1][j] = room_c2[k][j] / 2.0;
+				if (room_c2[k][j] != 0.0 && k - 1 > 0 && room_c2[k-1][j] == 0.0) {
+					room_c2[k - 1][j] = (room_c2[k][j] + room_c2[k - 1][j]) / 2.0;
 				}
-				if (room_c2[k][j] != 0.0 && j - 1 > 0 && room_c2[k][j - 1] == 0.0) {
-					room_c2[k][j - 1] = room_c2[k][j] / 2.0;
+				if (room_c2[k][j] != 0.0 && j - 1 > 0 && room_c2[k][j-1] == 0.0) {
+					room_c2[k][j - 1] = (room_c2[k][j] + room_c2[k][j-1]) / 2.0;
+				}
+				if (room_c2[k][j] != 0.0 && k + 1 < 13 && room_c2[k + 1][j] == 0.0) {
+					room_c2[k + 1][j] = (room_c2[k][j] + room_c2[k + 1][j]) / 2.0;
+				}
+				if (room_c2[k][j] != 0.0 && j + 1 < 17 && room_c2[k][j+1] == 0.0) {
+					room_c2[k][j + 1] = (room_c2[k][j] + room_c2[k][j+1]) / 2.0;
 				}
 			}
 		}
@@ -218,14 +237,14 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 	}
 
 
-	printf("計算結果\n");
+	//printf("計算結果\n");
 	for (int j = 0; j < 13; j++) {
 		for (int k = 0; k < 17; k++) {
 			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
 			//閾値を0.5に仮定
-			//if (room[j][k] < 0.4)room[j][k] = 0.0;
+			if (room[j][k] < 0.4)room[j][k] = 0.0;
 			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
-			printf("%2.2lf ", room[j][k]);
+			printf("%2.2lf ", room_c2[j][k]);
 		}
 		printf("\n");
 	}
