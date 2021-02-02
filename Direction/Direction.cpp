@@ -66,7 +66,9 @@ double deg_adj_c1(double deg) {
 }
 
 double deg_adj_c2(double deg) {
-	deg = deg + c_r_2;
+	//deg = deg + c_r_2;
+	deg = c_r_2 - deg;
+	if (deg < 0)deg = 360 + deg;
 	return deg;
 }
 
@@ -129,9 +131,9 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 				room_c1[point_c1r][i] = (room_c1[point_c1r][i] + 1.0) / 2.0;
 			}
 			else {
-				for (int j = 0; j < 13; j++) {
+				/*for (int j = 0; j < 13; j++) {
 					room_c1[j][i] = room_c1[j][i] / 2.0;
-				}
+				}*/
 			}
 
 			//printf("test = %d\n",point_c1);
@@ -168,6 +170,7 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 		left_rad2 = deg_to_rad(left_deg2);
 		right_rad2 = deg_to_rad(right_deg2);
 
+
 		point_c2 = 0.0;
 
 		/*printf("カメラ2確認用\n");
@@ -182,16 +185,18 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 
 
 		// 確率密度関数に入れていく　17*13
-		for (int i = 0; i < 17; i++) {
+		for (int i = 0; i < 18; i++) {
 //		for (int i = 17; i > 0; i--) {
-
+			printf("i=%d,point_c2=%d\n", i, point_c2);
 			//y軸　反転させる
-			point_c2 = (int)(left_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * left_rad2)) * 2;
+			point_c2 = (int)(left_rad2 * ((double)i * 0.5) + c_y_2 - c_x_2 * left_rad2) * 2;
 			//point_c2 = (int)(left_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * left_rad2)) * 2;
+			//point_c2 = point_c2;
 			point_c2 = 13 - point_c2;
 
 			point_c2r = (int)(right_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * right_rad2)) * 2;
 			//point_c2r = (int)(right_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * right_rad2)) * 2;
+			//point_c2r = point_c2r;
 			point_c2r = 13 - point_c2r;
 
 			/*if (0 <= point_c2 && point_c2 <= 13) {
@@ -199,20 +204,23 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 				printf("leftx_2 = %2.2f \n", leftx_2[n]);
 			}*/
 			if (0 <= point_c2 && point_c2 <= 13) {
-				room_c2[point_c2][17-i] = (room_c2[point_c2][17 - i] + 1.0) / 2.0;
+				room_c2[point_c2][i] = (room_c2[point_c2][i] + 1.0) / 2.0;
+				//	room_c2[point_c2][17-i] = (room_c2[point_c2][17 - i] + 1.0) / 2.0;
 			}
 			else {
 				for (int j = 0; j < 13; j++) {
-					room_c2[j][17 - i] = room_c2[j][17 - i] / 2.0;
+					room_c2[j][i] = room_c2[j][i] / 2.0;
+					//room_c2[j][17 - i] = room_c2[j][17 - i] / 2.0;
 				}
 			}
 			if (0 <= point_c2r && point_c2r <= 13) {
-				room_c2[point_c2r][17 - i] = (room_c2[point_c2r][17 - i] + 1.0) / 2.0;
+				room_c2[point_c2r][i] = (room_c2[point_c2r][i] + 1.0) / 2.0;
+				//room_c2[point_c2r][17 - i] = (room_c2[point_c2r][17 - i] + 1.0) / 2.0;
 			}
 			else {
-				for (int j = 0; j < 13; j++) {
+				/*for (int j = 0; j < 13; j++) {
 					room_c2[j][17 - i] = room_c2[j][17 - i] / 2.0;
-				}
+				}*/
 			}
 		}
 
