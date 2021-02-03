@@ -38,8 +38,8 @@
 //カメラの設置の高さ(m) カメラ#2 左下0,0
 #define c_z_2 2.5  //高さ
 #define c_y_2 5.57 //縦
-//#define c_x_2 3.49 //横
-#define c_x_2 4.49 //横
+#define c_x_2 3.49 //横
+//#define c_x_2 4.49 //横
 #define c_r_2 90.0
 
 
@@ -68,7 +68,9 @@ double deg_adj_c1(double deg) {
 double deg_adj_c2(double deg) {
 	//deg = deg + c_r_2;
 	deg = c_r_2 - deg;
+	printf("deg = %2.2f\n",deg);
 	if (deg < 0)deg = 360 + deg;
+	printf("deg = %2.2f\n", deg);
 	return deg;
 }
 
@@ -164,16 +166,16 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 	for (int n = 0; leftx_2[n] != NULL; n++) {
 
 		/*camera 2*/
-		left_deg2 = deg_adj_c2(leftx_2[n] / 3860.0);
-		right_deg2 = deg_adj_c2(rightx_2[n] / 3860.0);
+		left_deg2 = deg_adj_c2((leftx_2[n] / 3860.0 )* 360);
+		right_deg2 = deg_adj_c2((rightx_2[n] / 3860.0 )* 360);
 
-		left_rad2 = deg_to_rad(left_deg2);
-		right_rad2 = deg_to_rad(right_deg2);
+		left_rad2 = tan(deg_to_rad(left_deg2));
+		right_rad2 = tan(deg_to_rad(right_deg2));
 
 
 		point_c2 = 0.0;
 
-		/*printf("カメラ2確認用\n");
+		printf("カメラ2確認用\n");
 		printf("leftx_2[n] = %lf\n", leftx_2[n]);
 		printf("rightx_2[n] = %lf\n", rightx_2[n]);
 
@@ -181,7 +183,7 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 		printf("right_deg2 = %lf\n", right_deg2);
 
 		printf("left_rad2 = %lf\n", left_rad2);
-		printf("right_rad2 = %lf\n", right_rad2);*/
+		printf("right_rad2 = %lf\n", right_rad2);
 
 
 		// 確率密度関数に入れていく　17*13
@@ -205,7 +207,7 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 			}*/
 			if (0 <= point_c2 && point_c2 <= 13) {
 				room_c2[point_c2][i] = (room_c2[point_c2][i] + 1.0) / 2.0;
-				//	room_c2[point_c2][17-i] = (room_c2[point_c2][17 - i] + 1.0) / 2.0;
+					//room_c2[point_c2][17-i] = (room_c2[point_c2][17 - i] + 1.0) / 2.0;
 			}
 			else {
 				for (int j = 0; j < 13; j++) {
@@ -252,7 +254,7 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 			//閾値を0.5に仮定
 			if (room[j][k] < 0.4)room[j][k] = 0.0;
 			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
-			printf("%2.2lf ", room_c2[j][k]);
+			printf("%2.2lf ", room[j][k]);
 		}
 		printf("\n");
 	}

@@ -1,57 +1,37 @@
 ﻿  Direction.cpp
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(95,14): warning C4244: '=': 'double' から 'int' への変換です。データが失われる可能性があります。
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(174,14): warning C4244: '=': 'double' から 'int' への変換です。データが失われる可能性があります。
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(431,45): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(97,14): warning C4244: '=': 'double' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(176,14): warning C4244: '=': 'double' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(433,45): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(431,31): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(433,31): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(433,40): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(435,40): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(433,32): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(435,32): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(433,67): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(435,67): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(433,59): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(435,59): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(450,31): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
-          with
-          [
-              _Tp=int
-          ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(450,23): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
-          with
-          [
-              _Tp=int
-          ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(451,31): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
-          with
-          [
-              _Tp=int
-          ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(451,23): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
-          with
-          [
-              _Tp=int
-          ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(452,28): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(452,31): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
@@ -61,7 +41,7 @@ C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(452,23): warning C
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(453,28): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(453,31): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
@@ -71,42 +51,62 @@ C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(453,23): warning C
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(465,29): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(454,28): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(465,24): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(454,23): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(466,36): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(455,28): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(466,28): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(455,23): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(467,40): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(467,29): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(467,28): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(467,24): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(468,33): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(468,36): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
           ]
-C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(468,24): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(468,28): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(469,40): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(469,28): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(470,33): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\hitot\source\repos\Direction\Direction\Direction.cpp(470,24): warning C4244: '引数': 'double' から '_Tp' への変換です。データが失われる可能性があります。
           with
           [
               _Tp=int
