@@ -42,7 +42,7 @@
 //#define c_x_2 4.49 //横
 #define c_r_2 90.0
 
-;\
+
 //#define deg_to_rad(deg) (((deg)/360)*2*M_PI)
 #define deg_to_rad(deg) deg *M_PI / 180
 
@@ -79,7 +79,6 @@ double deg_adj_c2(double deg) {
 	return deg;
 }
 
-//単純な角度計算では出なかった！　縦が180度じゃない...
 double distance(double height, double height_top, double tmp_room[14][18], int camera_num) {
 	double tmp_height = 0.0;
 	double tmp_height_top = 0.0;
@@ -95,8 +94,8 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 	tmp_height = (height / 1920.0) * 180.0;
 	tmp_height_top = (height_top / 1920.0) * 180.0;
 
-	if (tmp_height > 90) tmp_height = 180 - tmp_height;
-	if (tmp_height_top > 90) tmp_height_top = 180 - tmp_height_top;
+	tmp_height = 180 - tmp_height;
+	tmp_height_top = 180 - tmp_height_top;
 
 	rad_height = deg_to_rad(tmp_height);
 	rad_height_top = deg_to_rad(tmp_height_top);
@@ -111,13 +110,11 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 	tmp_room[test_x][test_y] = 1.0;
 
 	/*カメラの位置確認用*/
-	test_x = 13 - (int)(c_y_2 * 2.0 + 0.5);
+	test_x = 13 - (int)((c_y_2 + 0.5 )* 2.0 );
 	test_y = (int)(c_x_2 * 2.0 + 0.5);
 	tmp_room[test_x][test_y] = 1.0;
 
 	if (camera_num == 1) {
-		center_x = (c_x_1 * 2.0) + 0.5; //配列用に2倍
-		center_y = (13.0 - c_y_1 * 2.0) + 0.5;
 
 		for (int j = 0; j < 13; j++) {
 			if (j < c_y_1 * 2.0)r_y = c_y_1 * 2.0 - (double)j;
@@ -129,7 +126,7 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 				if (c_x_1 * 2.0 <= k)r_x = (double)k - c_x_1 * 2.0;
 
 				/*上辺*/
-				if (dis - 0.25 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis + 0.25) {
+				if (dis - 0.5 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis + 0.5) {
 					/*printf("dis = %2.2f", dis);
 					printf("計算結果 %d,%d %2.2f\n", 13 - j, k, sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)));*/
 					tmp_room[13 - j][k] = 1.2;
@@ -137,19 +134,25 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 				}
 
 				/*下辺*/
-				if (dis_top - 0.25 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis - 0.25) {
+				if (dis_top - 0.5 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis - 0.5) {
 					tmp_room[13 - j][k] = 1.5;
 					//tmp_room[13 - j][k] = (tmp_room[13 - j][k] + 1.5) / 2.0;
 				}
 
 			}
 		}
+
+		//printf("c1\n");
+		//for (int j = 0; j < 13; j++) {
+		//	for (int k = 0; k < 17; k++) {
+		//		printf("%2.2lf ", tmp_room[j][k]);
+		//	}
+		//	printf("\n");
+		//}
+		//printf("\n");
 	}
 
 	if (camera_num == 2) {
-		center_x = (c_x_2 * 2.0) + 0.5; //配列用に2倍
-		center_y = (13.0 - c_y_2 * 2.0) + 0.5;
-
 
 		for (int j = 0; j < 13; j++) {
 			if (j < c_y_2 * 2.0)r_y = c_y_2 * 2.0 - (double)j;
@@ -164,7 +167,7 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 				if (c_x_2 * 2.0 <= k)r_x = (double)k - c_x_2 * 2.0;
 
 				/*上辺*/
-				if (dis - 0.25 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis + 0.25) {
+				if (dis - 0.5 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis + 0.5) {
 					/*printf("dis = %2.2f", dis);
 					printf("計算結果 %d,%d %2.2f\n", 13 - j, k, sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)));*/
 					tmp_room[13 - j][k] = 1.2;
@@ -172,21 +175,21 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 				}
 
 				/*下辺*/
-				if (dis_top - 0.25 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis - 0.25) {
+				if (dis_top - 0.5 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis - 0.5) {
 					tmp_room[13 - j][k] = 1.5;
 					//tmp_room[13 - j][k] = (tmp_room[13 - j][k] + 1.5) / 2.0;
 				}
 
 			}
 		}
-		printf("height = %2.2f\n",height);
-		for (int j = 0; j < 13; j++) {
-			for (int k = 0; k < 17; k++) {
-				printf("%2.2lf ", tmp_room[j][k]);
-			}
-			printf("\n");
-		}
-		printf("\n");
+		//printf("c2\n");
+		//for (int j = 0; j < 13; j++) {
+		//	for (int k = 0; k < 17; k++) {
+		//		printf("%2.2lf ", tmp_room[j][k]);
+		//	}
+		//	printf("\n");
+		//}
+		//printf("\n");
 	
 	}
 
@@ -424,7 +427,7 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 			}
 
 		}
-		distance(height1[m], height1_top[m], dis_room2, 2);
+		distance(height2[m], height2_top[m], dis_room2, 2);
 		for (int j = 0; j < 13; j++) {
 			for (int k = 0; k < 17; k++) {
 				room_c2[j][k] = room_c2[j][k] * dis_room2[j][k];
@@ -434,21 +437,31 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 
 	}
 
-
-
-
-	printf("計算結果\n");
+	printf("計算結果1\n");
 	for (int j = 0; j < 13; j++) {
 		for (int k = 0; k < 17; k++) {
 			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
 			//閾値を0.5に仮定
 			//if (room[j][k] < 0.4)room[j][k] = 0.0;
 			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
-			printf("%2.2lf ", room_c2[j][k]);
+			printf("%2.2lf ", room[j][k]);
 		}
 		printf("\n");
 	}
 	printf("\n");
+
+	//printf("計算結果2\n");
+	//for (int j = 0; j < 13; j++) {
+	//	for (int k = 0; k < 17; k++) {
+	//		room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
+	//		//閾値を0.5に仮定
+	//		//if (room[j][k] < 0.4)room[j][k] = 0.0;
+	//		room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
+	//		printf("%2.2lf ", room_c2[j][k]);
+	//	}
+	//	printf("\n");
+	//}
+	//printf("\n");
 
 	return 0;
 }
