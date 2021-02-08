@@ -89,30 +89,30 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 	int center_x = 0, center_y = 0;
 	double r_x = 0.0, r_y = 0.0;
 
-	height = (height + height_top) / 2.0;
+	height = height_top;
 
 	tmp_height = (height / 1920.0) * 180.0;
-	tmp_height_top = (height_top / 1920.0) * 180.0;
+	//tmp_height_top = (height_top / 1920.0) * 180.0;
 
 	tmp_height = 180 - tmp_height;
-	tmp_height_top = 180 - tmp_height_top;
+	//tmp_height_top = 180 - tmp_height_top;
 
 	rad_height = deg_to_rad(tmp_height);
-	rad_height_top = deg_to_rad(tmp_height_top);
+	//rad_height_top = deg_to_rad(tmp_height_top);
 
 	dis = c_z_1 * tan(rad_height);
-	dis_top = c_z_1 * tan(rad_height_top);
+	//dis_top = c_z_1 * tan(rad_height_top);
 
 	/*カメラの位置確認用*/
 	int test_x = 0, test_y = 0;
 	test_x = 13 - (int)(c_y_1 * 2.0 + 0.5);
 	test_y = (int)(c_x_1 * 2.0 + 0.5);
-	tmp_room[test_x][test_y] = 1.0;
+	//tmp_room[test_x][test_y] = 1.0;
 
 	/*カメラの位置確認用*/
-	test_x = 13 - (int)((c_y_2 + 0.5 )* 2.0 );
+	test_x = 13 - (int)((c_y_2 + 0.5) * 2.0);
 	test_y = (int)(c_x_2 * 2.0 + 0.5);
-	tmp_room[test_x][test_y] = 1.0;
+	//tmp_room[test_x][test_y] = 1.0;
 
 	if (camera_num == 1) {
 
@@ -129,27 +129,27 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 				if (dis - 0.5 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis + 0.5) {
 					/*printf("dis = %2.2f", dis);
 					printf("計算結果 %d,%d %2.2f\n", 13 - j, k, sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)));*/
-					tmp_room[13 - j][k] = 1.2;
+					tmp_room[13 - j][k] = 1.0;
 					//tmp_room[13 - j][k] = (tmp_room[13 - j][k] + 1.2) / 2.0;
 				}
 
-				/*下辺*/
-				if (dis_top - 0.5 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis - 0.5) {
-					tmp_room[13 - j][k] = 1.5;
-					//tmp_room[13 - j][k] = (tmp_room[13 - j][k] + 1.5) / 2.0;
-				}
+				///*下辺*/
+				//if (dis_top - 0.5 <= sqrt(pow(r_y * 0.5 + 0.5, 2.0) + pow(r_x * 0.5 + 0.5, 2.0)) && sqrt(pow(r_y * 0.5 + 0.5, 2.0) + pow(r_x * 0.5 + 0.5, 2.0)) <= dis - 0.5) {
+				//	tmp_room[13 - j][k] = 1.0;
+				//	//tmp_room[13 - j][k] = (tmp_room[13 - j][k] + 1.5) / 2.0;
+				//}
 
 			}
 		}
 
-		//printf("c1\n");
-		//for (int j = 0; j < 13; j++) {
-		//	for (int k = 0; k < 17; k++) {
-		//		printf("%2.2lf ", tmp_room[j][k]);
-		//	}
-		//	printf("\n");
-		//}
-		//printf("\n");
+		printf("c1\n");
+		for (int j = 0; j < 13; j++) {
+			for (int k = 0; k < 17; k++) {
+				printf("%2.2lf ", tmp_room[j][k]);
+			}
+			printf("\n");
+		}
+		printf("\n");
 	}
 
 	if (camera_num == 2) {
@@ -160,9 +160,6 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 
 			for (int k = 0; k < 17; k++) {
 
-				//printf("dis = %2.2f", dis);
-				//printf("計算結果 %d,%d %2.2f\n", 13 - j, k, sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)));
-
 				if (k < c_x_2 * 2.0)r_x = c_x_2 * 2.0 - (double)k;
 				if (c_x_2 * 2.0 <= k)r_x = (double)k - c_x_2 * 2.0;
 
@@ -170,27 +167,27 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 				if (dis - 0.5 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis + 0.5) {
 					/*printf("dis = %2.2f", dis);
 					printf("計算結果 %d,%d %2.2f\n", 13 - j, k, sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)));*/
-					tmp_room[13 - j][k] = 1.2;
+					tmp_room[13 - j][k] = 1.0;
 					//tmp_room[13 - j][k] = (tmp_room[13 - j][k] + 1.2) / 2.0;
 				}
 
-				/*下辺*/
-				if (dis_top - 0.5 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis - 0.5) {
-					tmp_room[13 - j][k] = 1.5;
-					//tmp_room[13 - j][k] = (tmp_room[13 - j][k] + 1.5) / 2.0;
-				}
+				///*下辺*/
+				//if (dis_top - 0.5 <= sqrt(pow(r_y * 0.5 + 0.5, 2.0) + pow(r_x * 0.5 + 0.5, 2.0)) && sqrt(pow(r_y * 0.5 + 0.5, 2.0) + pow(r_x * 0.5 + 0.5, 2.0)) <= dis - 0.5) {
+				//	tmp_room[13 - j][k] = 1.0;
+				//	//tmp_room[13 - j][k] = (tmp_room[13 - j][k] + 1.5) / 2.0;
+				//}
 
 			}
 		}
-		//printf("c2\n");
-		//for (int j = 0; j < 13; j++) {
-		//	for (int k = 0; k < 17; k++) {
-		//		printf("%2.2lf ", tmp_room[j][k]);
-		//	}
-		//	printf("\n");
-		//}
-		//printf("\n");
-	
+		printf("c2\n");
+		for (int j = 0; j < 13; j++) {
+			for (int k = 0; k < 17; k++) {
+				printf("%2.2lf ", tmp_room[j][k]);
+			}
+			printf("\n");
+		}
+		printf("\n");
+
 	}
 
 	//for (int j = 0; j < 13; j++) {
@@ -268,11 +265,11 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 
 			/*---値を入れていく----------------------------------------------------------------------------------------------*/
 			// left
-			if (0 <= point_c1 && point_c1 <= 13) {
+			/*if (0 <= point_c1 && point_c1 <= 13) {
 				room_c1[point_c1][i] = (room_c1[point_c1][i] + 0.5) / 2.0;
 				point_c1x = i;
 				point_c1y = point_c1;
-			}
+			}*/
 			/*else {
 				for (int j = 0; j < 13; j++) {
 					room_c1[j][i] = room_c1[j][i] / 2.0;
@@ -283,10 +280,10 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 			}*/
 
 			//right
-			if (0 <= point_c1r && point_c1r <= 13) {
+			/*if (0 <= point_c1r && point_c1r <= 13) {
 				room_c1[point_c1r][i] = (room_c1[point_c1r][i] + 0.5) / 2.0;
 				point_c1yr = point_c1r;
-			}
+			}*/
 			/*else {
 				for (int j = 0; j < 13; j++) {
 					room_c1[j][i] = room_c1[j][i] / 2.0;
@@ -306,7 +303,7 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 			}*/
 			/*-------------------------------------------------------------------------------------------------------------*/
 			//間を塗りつぶす
-			if (point_c1y != point_c1yr && 0 <= point_c1 && point_c1 <= 13 && 0 <= point_c1r && point_c1r <= 13) {
+			/*if (point_c1y != point_c1yr && 0 <= point_c1 && point_c1 <= 13 && 0 <= point_c1r && point_c1r <= 13) {
 				if (point_c1y < point_c1yr)
 					for (int a = point_c1y; a < point_c1yr; a++) {
 						room_c1[a][point_c1x] = (room_c1[a][point_c1x] + 0.5) / 2.0;
@@ -315,12 +312,13 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 					for (int a = point_c1y; a < point_c1yr; a++) {
 						room_c1[a][point_c1x] = (room_c1[a][point_c1x] + 0.5) / 2.0;
 					}
-			}
+			}*/
 		}
 		distance(height1[n], height1_top[n], dis_room1, 1);
 		for (int j = 0; j < 13; j++) {
 			for (int k = 0; k < 17; k++) {
 				room_c1[j][k] = room_c1[j][k] * dis_room1[j][k];
+
 			}
 		}
 
@@ -371,12 +369,12 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 
 			/*---値を入れていく----------------------------------------------------------------------------------------------*/
 			//left
-			if (0 <= point_c2 && point_c2 <= 13) {
-				room_c2[point_c2][i] = (room_c2[point_c2][i] + 0.5) / 2.0;
-				point_c2x = i;
-				point_c2y = point_c2;
-				//room_c2[point_c2][17-i] = (room_c2[point_c2][17 - i] + 1.0) / 2.0;
-			}
+			//if (0 <= point_c2 && point_c2 <= 13) {
+			//	room_c2[point_c2][i] = (room_c2[point_c2][i] + 0.5) / 2.0;
+			//	point_c2x = i;
+			//	point_c2y = point_c2;
+			//	//room_c2[point_c2][17-i] = (room_c2[point_c2][17 - i] + 1.0) / 2.0;
+			//}
 			//else {
 			//	for (int j = 0; j < 13; j++) {
 			//		room_c2[j][i] = room_c2[j][i] / 2.0;
@@ -386,12 +384,12 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 			//	}
 			//}
 			//right
-			if (0 <= point_c2r && point_c2r <= 13) {
-				room_c2[point_c2r][i] = (room_c2[point_c2r][i] + 0.5) / 2.0;
-				point_c2x = i;
-				point_c2yr = point_c2r;
-				//room_c2[point_c2r][17 - i] = (room_c2[point_c2r][17 - i] + 1.0) / 2.0;
-			}
+			//if (0 <= point_c2r && point_c2r <= 13) {
+			//	room_c2[point_c2r][i] = (room_c2[point_c2r][i] + 0.5) / 2.0;
+			//	point_c2x = i;
+			//	point_c2yr = point_c2r;
+			//	//room_c2[point_c2r][17 - i] = (room_c2[point_c2r][17 - i] + 1.0) / 2.0;
+			//}
 			/*else {
 				for (int j = 0; j < 13; j++) {
 					room_c2[j][i] = room_c2[j][i] / 2.0;
@@ -413,7 +411,7 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 
 
 			//間に入れていく
-			if (point_c2y != point_c2yr && 0 <= point_c2 && point_c2 <= 13 && 0 <= point_c2r && point_c2r <= 13) {
+			/*if (point_c2y != point_c2yr && 0 <= point_c2 && point_c2 <= 13 && 0 <= point_c2r && point_c2r <= 13) {
 				if (point_c2y < point_c2yr) {
 					for (int a = point_c2y; a < point_c2yr; a++) {
 						room_c2[a][point_c2x] = (room_c2[a][point_c2x] + 0.5) / 2.0;
@@ -424,7 +422,7 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 						room_c2[a][point_c2x] = (room_c2[a][point_c2x] + 0.5) / 2.0;
 					}
 				}
-			}
+			}*/
 
 		}
 		distance(height2[m], height2_top[m], dis_room2, 2);
@@ -437,12 +435,10 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 
 	}
 
-	printf("計算結果1\n");
+	printf("計算結果\n");
 	for (int j = 0; j < 13; j++) {
 		for (int k = 0; k < 17; k++) {
-			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
-			//閾値を0.5に仮定
-			//if (room[j][k] < 0.4)room[j][k] = 0.0;
+			//room[j][k] = room_c2[j][k];
 			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
 			printf("%2.2lf ", room[j][k]);
 		}
@@ -662,7 +658,7 @@ int main()//int argc, const char* argv[]
 		/*----------------------------------------------------------------------------------------------------------*/
 		for (int j = 0; j < 13; j++) {
 			for (int k = 0; k < 17; k++) {
-				if (room[j][k] >= max * 0.95 && room[j][k] != 0.0)fprintf(fp4, " %d,%d", j, k);
+				if (room[j][k] >= max * 0.8 && room[j][k] != 0.0)fprintf(fp4, " %d,%d", j, k);
 				//if (room[j][k] > d_top5[4])fprintf(fp4, "%d %d\n", j, k);
 				fprintf(fp3, "%2.2lf ", room[j][k]);
 			}
