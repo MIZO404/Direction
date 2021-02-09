@@ -15,8 +15,9 @@
 //部屋の広さ コアルーム 8.41 * 6.59
 #define ROOM_H 6.59 //変更
 #define ROOM_W 8.41 //
-#define ROOM_CX 16.68
-#define ROOM_CY 13.58
+#define ROOM_CX 33
+#define ROOM_CY 26
+
 
 //WINDOW SIZE
 #define WINDOW_H (ROOM_H * 100)
@@ -32,7 +33,8 @@
 //カメラの設置の高さ(m) カメラ#1 左下0,0
 #define c_z_1 2.5  //高さ
 #define c_y_1 0.74  //縦
-#define c_x_1 6.02 //横
+#define c_x_1 5.59 //横
+//#define c_x_1 6.02 //横
 #define c_r_1 270.0
 
 //カメラの設置の高さ(m) カメラ#2 左下0,0
@@ -79,7 +81,7 @@ double deg_adj_c2(double deg) {
 	return deg;
 }
 
-double distance(double height, double height_top, double tmp_room[14][18], int camera_num) {
+double distance(double height, double height_top, double tmp_room[ROOM_CY][ROOM_CX], int camera_num,double dis_tmp) {
 	double tmp_height = 0.0;
 	double tmp_height_top = 0.0;
 	double rad_height = 0.0;
@@ -90,6 +92,11 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 	double r_x = 0.0, r_y = 0.0;
 
 	height = height_top;
+	for (int i = 0; i < ROOM_CY - 1;i++) {
+		for (int j = 0; j < ROOM_CX - 1 ; j++) {
+			tmp_room[i][j] = 0.0;
+		}
+	}
 
 	tmp_height = (height / 1920.0) * 180.0;
 	//tmp_height_top = (height_top / 1920.0) * 180.0;
@@ -101,35 +108,37 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 	//rad_height_top = deg_to_rad(tmp_height_top);
 
 	dis = c_z_1 * tan(rad_height);
+	//dis_tmp = dis; // 後で消す
+	
 	//dis_top = c_z_1 * tan(rad_height_top);
 
 	/*カメラの位置確認用*/
 	int test_x = 0, test_y = 0;
-	test_x = 13 - (int)(c_y_1 * 2.0 + 0.5);
-	test_y = (int)(c_x_1 * 2.0 + 0.5);
+	test_x = ROOM_CY - (int)(c_y_1 * 4.0 + 0.5);
+	test_y = (int)(c_x_1 * 4.0 + 0.5);
 	//tmp_room[test_x][test_y] = 1.0;
 
 	/*カメラの位置確認用*/
-	test_x = 13 - (int)((c_y_2 + 0.5) * 2.0);
-	test_y = (int)(c_x_2 * 2.0 + 0.5);
+	test_x = ROOM_CY - (int)((c_y_2 + 0.5) * 4.0);
+	test_y = (int)(c_x_2 * 4.0 + 0.5);
 	//tmp_room[test_x][test_y] = 1.0;
 
 	if (camera_num == 1) {
 
-		for (int j = 0; j < 13; j++) {
-			if (j < c_y_1 * 2.0)r_y = c_y_1 * 2.0 - (double)j;
-			if (c_y_1 * 2.0 <= j)r_y = (double)j - c_y_1 * 2.0;
+		for (int j = 0; j < ROOM_CY - 1; j++) {
+			if (j < c_y_1 * 4.0)r_y = c_y_1 * 4.0 - (double)j;
+			if (c_y_1 * 4.0 <= j)r_y = (double)j - c_y_1 * 4.0;
 
-			for (int k = 0; k < 17; k++) {
+			for (int k = 0; k < ROOM_CX - 1; k++) {
 
-				if (k < c_x_1 * 2.0)r_x = c_x_1 * 2.0 - (double)k;
-				if (c_x_1 * 2.0 <= k)r_x = (double)k - c_x_1 * 2.0;
+				if (k < c_x_1 * 4.0)r_x = c_x_1 * 4.0 - (double)k;
+				if (c_x_1 * 4.0 <= k)r_x = (double)k - c_x_1 * 4.0;
 
 				/*上辺*/
-				if (dis - 0.5 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis + 0.5) {
+				if (dis - 0.25 <= sqrt(pow(r_y * 0.25, 2.0) + pow(r_x * 0.25, 2.0)) && sqrt(pow(r_y * 0.25, 2.0) + pow(r_x * 0.25, 2.0)) <= dis + 0.25) {
 					/*printf("dis = %2.2f", dis);
 					printf("計算結果 %d,%d %2.2f\n", 13 - j, k, sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)));*/
-					tmp_room[13 - j][k] = 1.0;
+					tmp_room[ROOM_CY -1 - j][k] = 1.0;
 					//tmp_room[13 - j][k] = (tmp_room[13 - j][k] + 1.2) / 2.0;
 				}
 
@@ -142,32 +151,32 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 			}
 		}
 
-		printf("c1\n");
-		for (int j = 0; j < 13; j++) {
-			for (int k = 0; k < 17; k++) {
-				printf("%2.2lf ", tmp_room[j][k]);
-			}
-			printf("\n");
-		}
-		printf("\n");
+		//printf("c1\n");
+		//for (int j = 0; j < 13; j++) {
+		//	for (int k = 0; k < 17; k++) {
+		//		printf("%2.2lf ", tmp_room[j][k]);
+		//	}
+		//	printf("\n");
+		//}
+		//printf("\n");
 	}
 
 	if (camera_num == 2) {
 
-		for (int j = 0; j < 13; j++) {
-			if (j < c_y_2 * 2.0)r_y = c_y_2 * 2.0 - (double)j;
-			if (c_y_2 * 2.0 <= j)r_y = (double)j - c_y_2 * 2.0;
+		for (int j = 0; j < ROOM_CY - 1; j++) {
+			if (j < c_y_2 * 4.0)r_y = c_y_2 * 4.0 - (double)j;
+			if (c_y_2 * 4.0 <= j)r_y = (double)j - c_y_2 * 4.0;
 
-			for (int k = 0; k < 17; k++) {
+			for (int k = 0; k < ROOM_CX - 1; k++) {
 
-				if (k < c_x_2 * 2.0)r_x = c_x_2 * 2.0 - (double)k;
-				if (c_x_2 * 2.0 <= k)r_x = (double)k - c_x_2 * 2.0;
+				if (k < c_x_2 * 4.0)r_x = c_x_2 * 4.0 - (double)k;
+				if (c_x_2 * 4.0 <= k)r_x = (double)k - c_x_2 * 4.0;
 
 				/*上辺*/
-				if (dis - 0.5 <= sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) && sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)) <= dis + 0.5) {
+				if (dis - 0.25 <= sqrt(pow(r_y * 0.25, 2.0) + pow(r_x * 0.25, 2.0)) && sqrt(pow(r_y * 0.25, 2.0) + pow(r_x * 0.25, 2.0)) <= dis + 0.25) {
 					/*printf("dis = %2.2f", dis);
 					printf("計算結果 %d,%d %2.2f\n", 13 - j, k, sqrt(pow(r_y * 0.5, 2.0) + pow(r_x * 0.5, 2.0)));*/
-					tmp_room[13 - j][k] = 1.0;
+					tmp_room[ROOM_CY -1 - j][k] = 1.0;
 					//tmp_room[13 - j][k] = (tmp_room[13 - j][k] + 1.2) / 2.0;
 				}
 
@@ -180,8 +189,8 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 			}
 		}
 		printf("c2\n");
-		for (int j = 0; j < 13; j++) {
-			for (int k = 0; k < 17; k++) {
+		for (int j = 0; j < ROOM_CY - 1; j++) {
+			for (int k = 0; k < ROOM_CX - 1; k++) {
 				printf("%2.2lf ", tmp_room[j][k]);
 			}
 			printf("\n");
@@ -189,7 +198,8 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 		printf("\n");
 
 	}
-
+	
+	//printf("c1\n");
 	//for (int j = 0; j < 13; j++) {
 	//	for (int k = 0; k < 17; k++) {
 	//		printf("%2.2lf ", tmp_room[j][k]);
@@ -202,13 +212,13 @@ double distance(double height, double height_top, double tmp_room[14][18], int c
 	return 0;
 }
 
-double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double leftx_2[p], double rightx_2[p], double height2[p], double room[14][18], double height1_top[p], double height2_top[p]) {
+double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double leftx_2[p], double rightx_2[p], double height2[p], double room[ROOM_CY][ROOM_CX], double height1_top[p], double height2_top[p]) {
 
 	double left_deg1 = 0.0, left_deg2 = 0.0;
 	double right_deg1 = 0.0, right_deg2 = 0.0;
 	double left_rad1 = 0.0, left_rad2 = 0.0;
 	double right_rad1 = 0.0, right_rad2 = 0.0;
-	double room_c1[14][18] = {}, room_c2[14][18] = {};
+	double room_c1[ROOM_CY][ROOM_CX] = {}, room_c2[ROOM_CY][ROOM_CX] = {};
 	int point_c1 = 0, point_c2 = 0;
 	int point_c1r = 0, point_c2r = 0;
 	int point_c1y = 0, point_c2y = 0;
@@ -219,21 +229,29 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 	double c1m_deg = 0.0, c2m_deg = 0.0;
 	double c1_rad = 0.0, c2_rad = 0.0;
 	int point_c1m = 0, point_c2m = 0;
-	double dis_room1[14][18] = {};
-	double dis_room2[14][18] = {};
+	double dis_room1[ROOM_CY][ROOM_CX] = {};
+	double dis_room2[ROOM_CY][ROOM_CX] = {};
+	double dis1 = 0.0, dis2 = 0.0;
+	double r_x = 0.0, r_y = 0.0;
+	double tmp_height = 0.0;
+	double rad_height = 0.0;
+
+	int start_x = 0,end_x = ROOM_CX -1;
 
 	// カメラの角度情報が入った配列を見ていく
 	for (int n = 0; leftx_1[n] != '\0'; n++) {
+		start_x = 0;
+		end_x = 0;
 
 		c1_m = (leftx_1[n] + rightx_1[n]) / 2.0;
 
 		/*camera 1*/
-		left_deg1 = deg_adj_c1((leftx_1[n] / 3840.0) * 360.0);
-		right_deg1 = deg_adj_c1((rightx_1[n] / 3840.0) * 360.0);
+		//left_deg1 = deg_adj_c1((leftx_1[n] / 3840.0) * 360.0);
+		//right_deg1 = deg_adj_c1((rightx_1[n] / 3840.0) * 360.0);
 		c1m_deg = deg_adj_c1((c1_m / 3840.0) * 360.0);
 
-		left_rad1 = tan(deg_to_rad(left_deg1));
-		right_rad1 = tan(deg_to_rad(right_deg1));
+		//left_rad1 = tan(deg_to_rad(left_deg1));
+		//right_rad1 = tan(deg_to_rad(right_deg1));
 		c1_rad = tan(deg_to_rad(c1m_deg));
 
 		point_c1 = 0.0;
@@ -249,17 +267,30 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 		//printf("right_rad1 = %lf\n", right_rad1);
 
 
+		/*向いている方向だけ値を入れる*/
+		if (c1_m > 3840.0 / 2.0) {
+			start_x = (c_x_1 + 0.25) * 4.0;
+			end_x = ROOM_CX-1;
+		}
+		if (c1_m < 3840.0 / 2.0) {
+			start_x = 0;
+			end_x = (c_x_1 + 0.25) * 4.0;
+		}
 		// 確率密度関数に入れていく　17*13
-		for (int i = 0; i < 17; i++) {
+		for (int i = start_x; i < end_x; i++) {
+		//for (int i = 0; i < 17; i++) {
 			//point_c1 = (int)((left_rad1 * ((double)i*0.5)) + (c_x_1 - left_rad1 * c_y_1))*2;
-			point_c1 = (int)(((left_rad1 * ((double)i * 0.5) + (c_y_1 - c_x_1 * left_rad1)) + 0.5) * 2.0);
+			/*point_c1 = (int)(((left_rad1 * ((double)i * 0.5) + (c_y_1 - c_x_1 * left_rad1)) + 0.5) * 2.0);
 			point_c1 = 13 - point_c1;
 
 			point_c1r = (int)(((right_rad1 * ((double)i * 0.5) + (c_y_1 - c_x_1 * right_rad1)) + 0.5) * 2.0);
-			point_c1r = 13 - point_c1r;
+			point_c1r = 13 - point_c1r;*/
 
-			point_c1m = (int)(((c1_rad * ((double)i * 0.5) + (c_y_1 - c_x_1 * c1_rad)) + 0.5) * 2.0);
-			point_c1m = 13 - point_c1m;
+
+
+			point_c1m = (int)(((c1_rad * ((double)i * 0.25) + (c_y_1 - c_x_1 * c1_rad)) + 0.25) * 4.0);
+			point_c1m = ROOM_CY - 1 - point_c1m;
+			//printf("point_c1m = %d\n", point_c1m);
 
 			point_c1y = i;
 
@@ -293,9 +324,25 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 			}*/
 
 			//mid
-			if (0 <= point_c1m && point_c1m <= 13) {
-				room_c1[point_c1m][i] = (room_c1[point_c1m][i] + 1.0) / 2.0;
+			if (0 <= point_c1m && point_c1m <= ROOM_CY-1) {
+				room_c1[point_c1m][i] = (room_c1[point_c1m][i] + 1.0);
+					if (room_c1[point_c1m][i] > 1.0)room_c1[point_c1m][i] = 1.0;
 			}
+
+			point_c1m = (int)(((c1_rad * ((double)i * 0.25) + (c_y_1 - c_x_1 * c1_rad)) + 0.25) * 4.0 + 0.1);
+			point_c1m = ROOM_CY - 1 - point_c1m;
+			if (0 <= point_c1m && point_c1m <= ROOM_CY - 1) {
+				room_c1[point_c1m][i] = (room_c1[point_c1m][i] + 1.0);
+				if (room_c1[point_c1m][i] > 1.0)room_c1[point_c1m][i] = 1.0;
+			}
+
+			point_c1m = (int)(((c1_rad * ((double)i * 0.25) + (c_y_1 - c_x_1 * c1_rad)) + 0.25) * 4.0 - 0.1);
+			point_c1m = ROOM_CY - 1 - point_c1m;
+			if (0 <= point_c1m && point_c1m <= ROOM_CY - 1) {
+				room_c1[point_c1m][i] = (room_c1[point_c1m][i] + 1.0);
+				if (room_c1[point_c1m][i] > 1.0)room_c1[point_c1m][i] = 1.0;
+			}
+
 			/*else {
 				for (int j = 0; j < 13; j++) {
 					room_c1[j][i] = room_c1[j][i] / 2.0;
@@ -314,9 +361,9 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 					}
 			}*/
 		}
-		distance(height1[n], height1_top[n], dis_room1, 1);
-		for (int j = 0; j < 13; j++) {
-			for (int k = 0; k < 17; k++) {
+		distance(height1[n], height1_top[n], dis_room1, 1,dis1);
+		for (int j = 0; j < ROOM_CY - 1; j++) {
+			for (int k = 0; k < ROOM_CX - 1; k++) {
 				room_c1[j][k] = room_c1[j][k] * dis_room1[j][k];
 
 			}
@@ -327,17 +374,21 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 		/*camera 2------------------------------------------------------------------------------------------*/
 
 
-		left_deg2 = leftx_2[m];
-		right_deg2 = rightx_2[m];
+		/*left_deg2 = leftx_2[m];
+		right_deg2 = rightx_2[m];*/
+		c2_m = (leftx_2[m] + rightx_2[m]) / 2.0;
+		
 
 		//printf("試算 %0.2f\n", left_deg2 * 360.0);
 
-		left_deg2 = deg_adj_c2(left_deg2 / 3840.0 * 360.0);
-		right_deg2 = deg_adj_c2(right_deg2 / 3840.0 * 360.0);
+		/*left_deg2 = deg_adj_c2(left_deg2 / 3840.0 * 360.0);
+		right_deg2 = deg_adj_c2(right_deg2 / 3840.0 * 360.0);*/
+		c2m_deg = deg_adj_c2(c2_m / 3840.0 * 360.0);
 
-		left_rad2 = tan(deg_to_rad(left_deg2));
-		right_rad2 = tan(deg_to_rad(right_deg2));
 
+		/*left_rad2 = tan(deg_to_rad(left_deg2));
+		right_rad2 = tan(deg_to_rad(right_deg2));*/
+		c2_rad = tan(deg_to_rad(c2m_deg));
 
 		point_c2 = 0.0;
 
@@ -351,21 +402,28 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 		printf("left_rad2 = %lf\n", left_rad2);
 		printf("right_rad2 = %lf\n", right_rad2);*/
 
-
+		if (c2_m < 3840.0 / 2.0) {
+			start_x = (c_x_2) * 4.0;
+			end_x = ROOM_CX - 1;
+		}
+		if (c2_m > 3840.0 / 2.0) {
+			start_x = 0;
+			end_x = (c_x_2 + 0.25) * 4.0;
+		}
 		// 確率密度関数に入れていく　17*13
-		for (int i = 0; i < 18; i++) {
+		for (int i = start_x; i < end_x; i++) {
 			//		for (int i = 17; i > 0; i--) {
 			//printf("i=%d,point_c2=%d\n", i, point_c2);
 			//y軸　反転させる
-			point_c2 = (int)(((left_rad2 * ((double)i * 0.5) + c_y_2 - c_x_2 * left_rad2) + 0.5) * 2.0) * 1;
+			/*point_c2 = (int)(((left_rad2 * ((double)i * 0.5) + c_y_2 - c_x_2 * left_rad2) + 0.5) * 2.0) * 1;
 			point_c2 = 13 - point_c2;
 
 			point_c2r = (int)(((right_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * right_rad2)) + 0.5) * 2.0) * 1;
-			point_c2r = 13 - point_c2r;
+			point_c2r = 13 - point_c2r;*/
 
-			point_c2m = (int)(((right_rad2 * ((double)i * 0.5) + (c_y_2 - c_x_2 * right_rad2)) + 0.5) * 2.0) * 1;
-			point_c2m = 13 - point_c2m;
-
+			point_c2m = (int)(((c2_rad * ((double)i * 0.25) + (c_y_2 - c_x_2 * c2_rad)) + 0.25) * 4.0) * 1;
+			point_c2m = ROOM_CY - 1 - point_c2m;
+			
 
 			/*---値を入れていく----------------------------------------------------------------------------------------------*/
 			//left
@@ -398,8 +456,27 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 				}
 			}*/
 			//mid
-			if (0 <= point_c2m && point_c2m <= 13) {
-				room_c2[point_c2m][i] = (room_c2[point_c2m][i] + 1.0) / 2.0;
+			if (0 <= point_c2m && point_c2m <= ROOM_CY -1) {
+				room_c2[point_c2m][i] = (room_c2[point_c2m][i] + 1.0);
+				if (room_c2[point_c2m][i] > 1.0)room_c2[point_c2m][i] = 1.0;
+			}
+
+
+			point_c2m = (int)(((c2_rad * ((double)i * 0.25) + (c_y_2 - c_x_2 * c2_rad)) + 0.25) * 4.0 + 0.15) ;
+			point_c2m = ROOM_CY - 1 - point_c2m;
+
+			if (0 <= point_c2m && point_c2m <= ROOM_CY - 1) {
+				room_c2[point_c2m][i] = (room_c2[point_c2m][i] + 1.0);
+				if (room_c2[point_c2m][i] > 1.0)room_c2[point_c2m][i] = 1.0;
+			}
+
+
+			point_c2m = (int)(((c2_rad * ((double)i * 0.25) + (c_y_2 - c_x_2 * c2_rad)) + 0.25) * 4.0 - 0.15) * 1;
+			point_c2m = ROOM_CY -1 - point_c2m;
+
+			if (0 <= point_c2m && point_c2m <= ROOM_CY - 1) {
+				room_c2[point_c2m][i] = (room_c2[point_c2m][i] + 1.0);
+				if (room_c2[point_c2m][i] > 1.0)room_c2[point_c2m][i] = 1.0;
 			}
 			/*else {
 				for (int j = 0; j < 13; j++) {
@@ -425,34 +502,33 @@ double camera1(double leftx_1[p], double rightx_1[p], double height1[p], double 
 			}*/
 
 		}
-		distance(height2[m], height2_top[m], dis_room2, 2);
-		for (int j = 0; j < 13; j++) {
-			for (int k = 0; k < 17; k++) {
+		distance(height2[m], height2_top[m], dis_room2, 2,dis2);
+		for (int j = 0; j < ROOM_CY - 1; j++) {
+			for (int k = 0; k < ROOM_CX - 1; k++) {
 				room_c2[j][k] = room_c2[j][k] * dis_room2[j][k];
 			}
 		}
-
-
 	}
-
-	printf("計算結果\n");
-	for (int j = 0; j < 13; j++) {
-		for (int k = 0; k < 17; k++) {
-			//room[j][k] = room_c2[j][k];
-			room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
-			printf("%2.2lf ", room[j][k]);
+	for (int j = 0; j < ROOM_CY - 1; j++) {
+		for (int k = 0; k < ROOM_CX - 1; k++) {
+			dis_room2[j][k] = 0.0;
 		}
-		printf("\n");
 	}
-	printf("\n");
+
+	//printf("計算結果 c1 \n");
+	for (int j = 0; j < ROOM_CY - 1; j++) {
+		for (int k = 0; k < ROOM_CX - 1; k++) {
+			//room[j][k] = room_c1[j][k];
+			room[j][k] = (room_c1[j][k] + room_c2[j][k]) ;
+			//printf("%2.2lf ", room_c1[j][k]);
+		}
+		//printf("\n");
+	}
+	//printf("\n");
 
 	//printf("計算結果2\n");
 	//for (int j = 0; j < 13; j++) {
 	//	for (int k = 0; k < 17; k++) {
-	//		room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
-	//		//閾値を0.5に仮定
-	//		//if (room[j][k] < 0.4)room[j][k] = 0.0;
-	//		room[j][k] = (room_c1[j][k] + room_c2[j][k]) / 2.0;
 	//		printf("%2.2lf ", room_c2[j][k]);
 	//	}
 	//	printf("\n");
@@ -485,19 +561,19 @@ int main()//int argc, const char* argv[]
 	int output_counter = 0;
 	char point_text[255] = {};
 
-	double room[14][18] = { 0.0 };
-	double past_room[10][14][18] = { 0.0 };
-	double ave_room[14][18] = {};
-	int past_count = 0;
-	double rad_room[p] = {};
+	double room[ROOM_CY][ROOM_CX] = { 0.0 };
+	//double past_room[10][14][18] = { 0.0 };
+	//double ave_room[14][18] = {};
+	//int past_count = 0;
+	//double rad_room[p] = {};
 
-	double tmp_pointx[30][4] = {};
-	double tmp_pointy[30][4] = {};
+	//double tmp_pointx[30][4] = {};
+	//double tmp_pointy[30][4] = {};
 	cv::Point out_point[4];
 
 	//ウィンドウサイズ
 	double rec_x1 = 0.0 + 50.0, rec_y1 = 0.0 + 50.0; //部屋の描写
-	double rec_x2 = ROOM_W * 50.0 + 50.0, rec_y2 = ROOM_H * 50.0 + 50.0;
+	double rec_x2 = ROOM_W * 50.0 + 25.0, rec_y2 = ROOM_H * 50.0 + 50.0;
 
 	double flame_pointx[p * 2] = {};
 	double flame_pointy[p * 2] = {};
@@ -637,29 +713,21 @@ int main()//int argc, const char* argv[]
 		}
 		// フレーム　切り替え
 
+		for (int i = 0; i < ROOM_CY - 1; i++) {
+			for (int j = 0; j < ROOM_CX - 1; j++) {
+				room[i][j] = 0.0;
+			}
+		}
+
 		camera1(left_x1, right_x1, height1, left_x2, right_x2, height2, room, height1_top, height2_top);
 
 		cv::Mat img(cv::Size(rec_x2 + 450, rec_y2 + 50), CV_8UC3, cv::Scalar(255, 255, 255));
 		cv::namedWindow("ROOM", cv::WINDOW_AUTOSIZE);
 		cv::rectangle(img, cv::Point(rec_x1, rec_y1), cv::Point(rec_x2, rec_y2), cv::Scalar(0, 0, 0), 2, 4); //部屋の描写
 
-		/*-------------------------セル内最大値---------------------------------------------------------------------*/
-
-		double sum = 0.0, ave = 0.0, max = 0.0;
-		int sum_count = 0;
-
-		for (int j = 0; j < 13; j++) {
-			for (int k = 0; k < 17; k++) {
-				if (room[j][k] > max) {
-					max = room[j][k];
-				}
-			}
-		}
-		/*----------------------------------------------------------------------------------------------------------*/
-		for (int j = 0; j < 13; j++) {
-			for (int k = 0; k < 17; k++) {
-				if (room[j][k] >= max * 0.8 && room[j][k] != 0.0)fprintf(fp4, " %d,%d", j, k);
-				//if (room[j][k] > d_top5[4])fprintf(fp4, "%d %d\n", j, k);
+		for (int j = 0; j < ROOM_CY - 1; j++) {
+			for (int k = 0; k < ROOM_CX - 1; k++) {
+				if(room[j][k]!=0.0)fprintf(fp4, " %d,%d", j, k);
 				fprintf(fp3, "%2.2lf ", room[j][k]);
 			}
 			fprintf(fp3, "\n");
@@ -667,30 +735,26 @@ int main()//int argc, const char* argv[]
 		fprintf(fp3, "\n");
 		fprintf(fp4, "\n");
 
-		ave = sum / (double)sum_count;
 
-		for (int j = 0; j < 13; j++) {
-			for (int k = 0; k < 17; k++) {
-				//if (room[j][k] > 0.4) {
-				double wid = 0.5 * k * 50.0 + rec_x1;
-				double hei = 0.5 * j * 50.0 + rec_y1;
+		for (int j = 0; j < ROOM_CY - 1; j++) {
+			for (int k = 0; k < ROOM_CX - 1; k++) {
+				
+				double wid = 0.25 * k * 50.0 + rec_x1;
+				double hei = 0.25 * j * 50.0 + rec_y1;
 				cv::Point pt[4];
 				pt[0] = cv::Point(wid, hei);
 				pt[1] = cv::Point(wid + 50.5, hei);
 				pt[2] = cv::Point(wid + 25.5, hei + 25.5);
 				pt[3] = cv::Point(wid, hei + 50.5);
-				if (room[j][k] >= max * 0.9)cv::rectangle(img, pt[0], pt[2], cv::Scalar(255, 255 - (255 * room[j][k]), 255), -1, CV_AA);
-				if (room[j][k] >= max * 0.8 && room[j][k] < max * 0.9)cv::rectangle(img, pt[0], pt[2], cv::Scalar(255 - (255 * room[j][k]), 255, 255), -1, CV_AA);
-				if (room[j][k] >= max * 0.6 && room[j][k] < max * 0.8)cv::rectangle(img, pt[0], pt[2], cv::Scalar(255, 255, 255 - (255 * room[j][k])), -1, CV_AA);
-				if (room[j][k] >= max * 0.4 && room[j][k] < max * 0.6)cv::rectangle(img, pt[0], pt[2], cv::Scalar(255, 255, 255 - (255 * room[j][k])), -1, CV_AA);
-				//}
+				if (room[j][k] >= 0.5)cv::rectangle(img, pt[0], pt[2], cv::Scalar(255, 255 - (255 * room[j][k]), 255), -1, CV_AA);
+				if (room[j][k] >= 0.25 && room[j][k] < 0.5)cv::rectangle(img, pt[0], pt[2], cv::Scalar(255 - (255 * room[j][k]), 255, 255), -1, CV_AA);
 			}
 		}
 
-		for (int j = 1; j < 14; j++) {
-			for (int k = 1; k < 17; k++) {
-				double wid = 0.5 * k * 50.0 + rec_x1;
-				double hei = 0.5 * j * 50.0 + rec_y1;
+		for (int j = 1; j < ROOM_CY; j++) {
+			for (int k = 1; k < ROOM_CX-1; k++) {
+				double wid = 0.25 * k * 50.0 + rec_x1;
+				double hei = 0.25 * j * 50.0 + rec_y1;
 				cv::Point ws_line(rec_x1, hei);
 				cv::Point wg_line(rec_x2, hei);
 				cv::Point hs_line(wid, rec_y1);
